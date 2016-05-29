@@ -1,0 +1,24 @@
+﻿/** Common Excel file XML DOM error checking/throwing functions
+ * @author TeamworkGuy2
+ * @since 2016-5-27
+ */
+module XlsxDomErrorsImpl {
+    var typeCheck: DomValidate = XlsxDomErrorsImpl; // TODO type-checker
+
+
+    export function missingNode(nodeName: string) {
+        return new Error("Error reading Excel template, missing required '" + nodeName + "' node");
+    }
+
+
+    export function unexpectedNode(badNodeName: string, expectedNodeName?: string, parentNodeName?: string, idx?: number, size?: number) {
+        return new Error("Error reading Excel template, unexpected '" + badNodeName + "' node" +
+            (expectedNodeName ? ", expected only '" + expectedNodeName + "' nodes" : "") +
+            (parentNodeName ? ", of parent node '" + parentNodeName + "'" : "") +
+            (idx || size ? (idx ? ", index=" + idx : "") + (size ? ", size=" + size : "") : "")
+        );
+    }
+
+}
+
+export = XlsxDomErrorsImpl;
