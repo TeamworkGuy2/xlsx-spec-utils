@@ -1,5 +1,5 @@
 "use strict";
-var DomBuilderHelper = require("../../ts-dom-builder/dom/DomBuilderHelper");
+var DomBuilderHelper = require("../../dom-builder/dom/DomBuilderHelper");
 var XmlFileInst = require("./XmlFileInst");
 /** This object implementation instantiates a new factory every time read() function called, usage: read()/write() pairs
  * @author TeamworkGuy2

@@ -1,4 +1,4 @@
-﻿import DomBuilderHelper = require("../../ts-dom-builder/dom/DomBuilderHelper");
+﻿import DomBuilderHelper = require("../../dom-builder/dom/DomBuilderHelper");
 import XmlFileInst = require("./XmlFileInst");
 
 /** This object implementation instantiates a new factory every time read() function called, usage: read()/write() pairs

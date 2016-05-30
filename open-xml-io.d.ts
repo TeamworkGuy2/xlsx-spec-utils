@@ -1,4 +1,4 @@
-﻿/// <reference path="../ts-dom-builder/dom/dom-builder.d.ts" />
+﻿/// <reference path="../dom-builder/dom/dom-builder.d.ts" />
 /// <reference path="../xlsx-spec-models/open-xml.d.ts" />
 
 /** Read/write interfaces for the 'OpenXml' definition

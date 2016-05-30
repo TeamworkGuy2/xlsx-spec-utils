@@ -1,6 +1,6 @@
 "use strict";
-var DomBuilderFactory = require("../../ts-dom-builder/dom/DomBuilderFactory");
-var DomBuilderHelper = require("../..//ts-dom-builder/dom/DomBuilderHelper");
+var DomBuilderFactory = require("../../dom-builder/dom/DomBuilderFactory");
+var DomBuilderHelper = require("../../dom-builder/dom/DomBuilderHelper");
 var XlsxDomErrorsImpl = require("../errors/XlsxDomErrorsImpl");
 /** Implementation of OpenXmlIo.ParsedFile, contains:
  * - An XMLDocument containing the file data
