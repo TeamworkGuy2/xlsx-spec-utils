@@ -83,7 +83,7 @@ var ExcelTemplateLoad;
     }
     // ==== functions for reading/writing higher level ParsedXlsxFileInst objects to JSZip files ====
     function loadExcelFileInst(readFileData) {
-        // TODO load number of sheets from '[Content_Types].xml' or 'xl/workbook.xml', also fix for media/images/itemProps
+        // TODO load number of sheets from '[Content_Types].xml' or 'xl/workbook.xml', also need to add media/images/itemProps parsing
         var sheetNum = 1;
         var calcChain = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.CalcChain);
         var comments = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Comments);
@@ -103,14 +103,20 @@ var ExcelTemplateLoad;
     ExcelTemplateLoad.loadExcelFileInst = loadExcelFileInst;
     function saveExcelFileInst(data, writeFileData) {
         // these 'files' are shared all worksheets in a workbook
-        saveXmlFile(null, writeFileData, data.calcChain, ExcelTemplateLoad.XlsxFiles.CalcChain);
-        saveXmlFile(null, writeFileData, data.sharedStrings, ExcelTemplateLoad.XlsxFiles.SharedStrings);
+        if (data.calcChain != null) {
+            saveXmlFile(null, writeFileData, data.calcChain, ExcelTemplateLoad.XlsxFiles.CalcChain);
+        }
+        if (data.sharedStrings != null) {
+            saveXmlFile(null, writeFileData, data.sharedStrings, ExcelTemplateLoad.XlsxFiles.SharedStrings);
+        }
         saveXmlFile(null, writeFileData, data.stylesheet, ExcelTemplateLoad.XlsxFiles.Styles);
         for (var i = 0, size = data.worksheets.length; i < size; i++) {
             // TODO load number of sheets from '[Content_Types].xml' or 'xl/workbook.xml', also fix this to work with media, images, itemProps
             var sheetNum = i + 1;
             var worksheet = data.worksheets[i];
-            saveXmlFile(sheetNum, writeFileData, worksheet.comments, ExcelTemplateLoad.XlsxFiles.Comments);
+            if (worksheet.comments != null) {
+                saveXmlFile(sheetNum, writeFileData, worksheet.comments, ExcelTemplateLoad.XlsxFiles.Comments);
+            }
             saveXmlFile(sheetNum, writeFileData, worksheet.worksheet, ExcelTemplateLoad.XlsxFiles.Worksheet);
         }
     }
@@ -120,7 +126,7 @@ var ExcelTemplateLoad;
         // TODO the path template token may not be a sheet number, could be a resource identifier (i.e. an image or item prop number)
         var path = info.pathIsTemplate ? info.xlsxFilePath.split(info.pathTemplateToken).join(sheetNum) : info.xlsxFilePath;
         var data = readFileData(path);
-        var inst = loader.read(data);
+        var inst = data != null ? loader.read(data) : null;
         return inst;
     }
     function saveXmlFile(sheetNum, writeFileData, data, writer) {
