@@ -4,7 +4,16 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.1.2](N/A) - 2016-08-24
+### [0.1.3](N/A) - 2016-11-12
+#### Added
+Added missing documentation to the `/files/` classes, `open-xml-io.d.ts`, and `StylesheetUtil.ts'
+
+#### Fixed
+`WorksheetUtil.createCellSimpleFormula()` incorrectly picking `cell.val` when `cell.formulaString` was non-null
+
+
+--------
+### [0.1.2](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/3153a109a74c2ddaeada238c176f43ba648657a4) - 2016-08-24
 #### Fixed
 XlsxReaderWriter skips reading and writing optional spreadsheet parts, such as calcChain, sharedStrings, and comments instead of throwing an error
 

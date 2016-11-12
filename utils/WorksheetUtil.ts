@@ -231,7 +231,7 @@ module WorksheetUtil {
     function createCellSimpleFormula(cell: SimpleCellData) {
         if (cell.isFormula) {
             return {
-                content: cell.formulaString || <string>cell.val,
+                content: cell.formulaString != null ? cell.formulaString : <string>cell.val,
                 ref: cell.formulaRange,
                 t: null,
                 si: null

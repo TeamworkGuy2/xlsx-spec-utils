@@ -210,6 +210,8 @@ var StylesheetUtil;
         return id;
     }
     StylesheetUtil.findOrCreateNumberFormatId = findOrCreateNumberFormatId;
+    /** Create default 'extList' element found in XLSX spreadsheets
+     */
     function createDefaultExtLst(domBldr) {
         return domBldr.create("extLst")
             .addChild(domBldr.create("ext").attrString("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}").attrString("xmlns:x14", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main")
@@ -219,6 +221,9 @@ var StylesheetUtil;
             .element;
     }
     StylesheetUtil.createDefaultExtLst = createDefaultExtLst;
+    /** Check if either a cell format's alignment or an inherited parent cell format's alignment are equivalent to a given alignment element.
+     * @return true if the 'fmt' or 'fmtParent' are equivalent to 'alignment'
+     */
     function compareCellFormatAlignment(fmt, fmtParent, alignment) {
         if (alignment == null) {
             return (fmt.alignment == null && fmtParent.alignment == null);
@@ -227,8 +232,10 @@ var StylesheetUtil;
             (fmtParent.applyAlignment && fmtParent.alignment && compareAlignment(alignment, fmtParent.alignment));
     }
     StylesheetUtil.compareCellFormatAlignment = compareCellFormatAlignment;
+    /** Check if two OpenXml.Alignment elements are equivalent
+     */
     function compareAlignment(a, b) {
-        // '==' equality so we don't have to manually check for empty strings, null vs. undefined, etc., may not be perfect
+        // '==' equality so we don't have to manually check for empty strings, null vs. undefined, etc., may not always compare correctly
         return (a == null && b == null) ||
             (a.horizontal == b.horizontal) &&
                 (a.indent == b.indent) &&
@@ -241,6 +248,8 @@ var StylesheetUtil;
                 (a.wrapText == b.wrapText);
     }
     StylesheetUtil.compareAlignment = compareAlignment;
+    /** Check if a simple border property is equivalent to an OpenXml.BorderProperty
+     */
     function compareBorder(a, b) {
         return (a.style == b.style) &&
             (a.auto == (b.color && b.color.auto)) &&
@@ -250,6 +259,8 @@ var StylesheetUtil;
             (a.tint == (b.color && b.color.tint));
     }
     StylesheetUtil.compareBorder = compareBorder;
+    /** Create an OpenXml.BorderProperty from a simple border property
+     */
     function _createBorder(borderData) {
         return borderData == null ? null : {
             style: borderData.style,

@@ -49,33 +49,55 @@ declare module OpenXmlIo {
 
         read(xmlContentStr: string): T;
 
-        write(inst: T): string;
+        write(data: T): string;
 
         // alternatives using existing Documents
         loadFromDom(dom: Document): T;
 
-        saveToDom(inst: T): Document;
+        saveToDom(data: T): Document;
     }
 
 
+    /** Helper interface for parsing HTMLElement arrays using a 'reader' function which accepts individual HTMLElements
+     */
     export interface ReadOpenXmlElement {
-        readMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, reader: ReadFunc<T>, elems: HTMLElement[]): T[];
-        readMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, reader: ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName: string): T[];
+
+        /** Given a 'reader' function and an array of HTML elements, run the reader against each of the elements and return the results as an array.
+         * @return an array of results in the same order as the 'elems' array
+         */
+        readMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, reader: /*ReadFunc<T>*/(xmlDoc: OpenXmlIo.ParsedFile, elem: HTMLElement, expectedElemName?: string) => T, elems: HTMLElement[]): T[];
+
+        /** Given a 'reader' function and an array of HTML elements, run the reader against each of the elements and return the results as an array.
+         * @param expectedElemName the expected nodeName of each of the 'elems', throw an error if any mismatch
+         * @return an array of results in the same order as the 'elems' array
+         */
+        readMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, reader: /*ReadFuncNamed<T>*/(xmlDoc: OpenXmlIo.ParsedFile, elem: HTMLElement, expectedElemName: string) => T, elems: HTMLElement[], expectedElemName: string): T[];
     }
 
 
+    /** Helper interface for serializing an array of data to HTMLElements using a 'writer' function which accepts individual data items
+     */
     export interface WriteOpenXmlElement {
-        writeMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, writer: WriteFunc<T>, insts: T[] | { [id: string]: T }, keys?: string[]): HTMLElement[];
-        writeMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, writer: WriteFuncNamed<T>, insts: T[], expectedElemName: string): HTMLElement[];
+
+        /** Given a 'writer' function and an array of data objects, run the writer against each of the objects and return the results as an array of HTMLElements.
+         * @return an array of HTMLElements in the same order as the 'insts' array
+         */
+        writeMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, writer: /*WriteFunc<T>*/(xmlDoc: OpenXmlIo.ParsedFile, data: T, expectedElemName?: string) => HTMLElement, insts: T[] | { [id: string]: T }, keys?: string[]): HTMLElement[];
+
+        /** Given a 'writer' function and an array of data objects, run the writer against each of the objects and return the results as an array of HTMLElements.
+         * @param expectedElemName the expected nodeName of each of the HTMLElements produced by the writer, throw an error if any mismatch
+         * @return an array of HTMLElements in the same order as the 'insts' array
+         */
+        writeMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, writer: /*WriteFuncNamed<T>*/(xmlDoc: OpenXmlIo.ParsedFile, data: T, expectedElemName: string) => HTMLElement, insts: T[], expectedElemName: string): HTMLElement[];
     }
 
 
     export interface Read<T> {
-        read: ReadFunc<T>;
+        read(xmlDoc: OpenXmlIo.ParsedFile, elem: HTMLElement, expectedElemName?: string): T; /*ReadFunc<T>*/
     }
 
     export interface ReadNamed<T> extends Read<T> {
-        read: ReadFuncNamed<T>;
+        read(xmlDoc: OpenXmlIo.ParsedFile, elem: HTMLElement, expectedElemName: string): T; /*ReadFuncNamed<T>*/
     }
 
 
@@ -89,20 +111,20 @@ declare module OpenXmlIo {
 
 
     export interface Write<T> {
-        write: WriteFunc<T>;
+        write(xmlDoc: OpenXmlIo.ParsedFile, data: T, expectedElemName?: string): HTMLElement; /*WriteFunc<T>*/
     }
 
     export interface WriteNamed<T> extends Write<T> {
-        write: WriteFuncNamed<T>;
+        write(xmlDoc: OpenXmlIo.ParsedFile, data: T, expectedElemName: string): HTMLElement; /*WriteFuncNamed<T>*/
     }
 
 
     export interface WriteFunc<T> {
-        (xmlDoc: OpenXmlIo.ParsedFile, inst: T, expectedElemName?: string): HTMLElement;
+        (xmlDoc: OpenXmlIo.ParsedFile, data: T, expectedElemName?: string): HTMLElement;
     }
 
     export interface WriteFuncNamed<T> {
-        (xmlDoc: OpenXmlIo.ParsedFile, inst: T, expectedElemName: string): HTMLElement;
+        (xmlDoc: OpenXmlIo.ParsedFile, data: T, expectedElemName: string): HTMLElement;
     }
 
 

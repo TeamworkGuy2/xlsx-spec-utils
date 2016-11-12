@@ -55,25 +55,28 @@ module XmlFileInst {
             var res: T[] = [];
             for (var i = 0, size = elems.length; i < size; i++) {
                 var elem = elems[i];
-                res.push((<any>reader)(xmlDoc, elem, expectedElemName));
+                res.push((<OpenXmlIo.ReadFunc<T>>reader)(xmlDoc, elem, expectedElemName));
             }
             return res;
         }
+
 
         public writeMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, writer: OpenXmlIo.WriteFuncNamed<T>, insts: T[], expectedElemName?: string): HTMLElement[];
         public writeMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, writer: OpenXmlIo.WriteFunc<T>, insts: { [id: string]: T }, keys?: string[]): HTMLElement[]
         public writeMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): HTMLElement[] {
             var res: HTMLElement[] = [];
             if (Array.isArray(keysOrExpectedElemName)) {
-                for (var i = 0, size = keysOrExpectedElemName.length || (<T[]>insts).length; i < size; i++) {
-                    var inst = <T>insts[keysOrExpectedElemName[i]];
-                    res.push((<any>writer)(xmlDoc, inst));
+                var keys = keysOrExpectedElemName;
+                for (var i = 0, size = keys.length || (<T[]>insts).length; i < size; i++) {
+                    var inst = <T>insts[keys[i]];
+                    res.push((<OpenXmlIo.WriteFunc<T>>writer)(xmlDoc, inst));
                 }
             }
             else {
+                var expectedElemName = keysOrExpectedElemName;
                 for (var i = 0, size = (<T[]>insts).length; i < size; i++) {
                     var inst = <T>insts[i];
-                    res.push((<any>writer)(xmlDoc, inst, keysOrExpectedElemName));
+                    res.push((<OpenXmlIo.WriteFunc<T>>writer)(xmlDoc, inst, expectedElemName));
                 }
             }
             return res;

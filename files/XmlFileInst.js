@@ -43,15 +43,17 @@ var XmlFileInst;
         ReadWriteOpenXmlElementImpl.prototype.writeMulti = function (xmlDoc, writer, insts, keysOrExpectedElemName) {
             var res = [];
             if (Array.isArray(keysOrExpectedElemName)) {
-                for (var i = 0, size = keysOrExpectedElemName.length || insts.length; i < size; i++) {
-                    var inst = insts[keysOrExpectedElemName[i]];
+                var keys = keysOrExpectedElemName;
+                for (var i = 0, size = keys.length || insts.length; i < size; i++) {
+                    var inst = insts[keys[i]];
                     res.push(writer(xmlDoc, inst));
                 }
             }
             else {
+                var expectedElemName = keysOrExpectedElemName;
                 for (var i = 0, size = insts.length; i < size; i++) {
                     var inst = insts[i];
-                    res.push(writer(xmlDoc, inst, keysOrExpectedElemName));
+                    res.push(writer(xmlDoc, inst, expectedElemName));
                 }
             }
             return res;

@@ -199,7 +199,7 @@ var WorksheetUtil;
     function createCellSimpleFormula(cell) {
         if (cell.isFormula) {
             return {
-                content: cell.formulaString || cell.val,
+                content: cell.formulaString != null ? cell.formulaString : cell.val,
                 ref: cell.formulaRange,
                 t: null,
                 si: null

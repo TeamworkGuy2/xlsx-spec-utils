@@ -247,6 +247,8 @@ module StylesheetUtil {
     }
 
 
+    /** Create default 'extList' element found in XLSX spreadsheets
+     */
     export function createDefaultExtLst(domBldr: DomBuilderFactory): Element {
         return domBldr.create("extLst")
             .addChild(domBldr.create("ext").attrString("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}").attrString("xmlns:x14", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main")
@@ -257,6 +259,9 @@ module StylesheetUtil {
     }
 
 
+    /** Check if either a cell format's alignment or an inherited parent cell format's alignment are equivalent to a given alignment element.
+     * @return true if the 'fmt' or 'fmtParent' are equivalent to 'alignment'
+     */
     export function compareCellFormatAlignment(fmt: OpenXml.CellFormat, fmtParent: OpenXml.CellFormat, alignment: OpenXml.Alignment) {
         if (alignment == null) {
             return (fmt.alignment == null && fmtParent.alignment == null);
@@ -266,8 +271,10 @@ module StylesheetUtil {
     }
 
 
+    /** Check if two OpenXml.Alignment elements are equivalent
+     */
     export function compareAlignment(a: OpenXml.Alignment, b: OpenXml.Alignment) {
-        // '==' equality so we don't have to manually check for empty strings, null vs. undefined, etc., may not be perfect
+        // '==' equality so we don't have to manually check for empty strings, null vs. undefined, etc., may not always compare correctly
         return (a == null && b == null) ||
             (a.horizontal == b.horizontal) &&
             (a.indent == b.indent) &&
@@ -281,6 +288,8 @@ module StylesheetUtil {
     }
 
 
+    /** Check if a simple border property is equivalent to an OpenXml.BorderProperty
+     */
     export function compareBorder(a: SimpleBorderProperty, b: OpenXml.BorderProperty) {
         return (a.style == b.style) &&
             (a.auto == (b.color && b.color.auto)) &&
@@ -291,6 +300,8 @@ module StylesheetUtil {
     }
 
 
+    /** Create an OpenXml.BorderProperty from a simple border property
+     */
     export function _createBorder(borderData: SimpleBorderProperty): OpenXml.BorderProperty {
         return borderData == null ? null : {
             style: borderData.style,
