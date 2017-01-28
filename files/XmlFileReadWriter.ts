@@ -7,9 +7,9 @@ import XmlFileInst = require("./XmlFileInst");
  */
 class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
     public fileInfo: OpenXmlIo.XlsxFileType;
-    private prepForWrite: (xmlDoc: OpenXmlIo.ParsedFile, inst: T) => void;
+    private prepForWrite: (xmlDoc: OpenXmlIo.WriterContext, inst: T) => void;
     private rootReadWriter: OpenXmlIo.ReadWrite<T>;
-    private lastReadXmlDoc: OpenXmlIo.ParsedFile;
+    private lastReadXmlDoc: OpenXmlIo.WriterContext;
 
 
     /** Create an XML file reader/writer
@@ -18,7 +18,7 @@ class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
      * @param prepForWrite a function which is called with the previous read()/loadFromDom() result before new DOM nodes are added by write()/saveToDom().
      * A common use for the function is to clear the DOM and add default schema/root meta-data elements and attributes about the XLSX file type.
      */
-    constructor(fileInfo: OpenXmlIo.XlsxFileType, rootReadWriter: OpenXmlIo.ReadWrite<T>, prepForWrite: (xmlDoc: OpenXmlIo.ParsedFile, inst: T) => void) {
+    constructor(fileInfo: OpenXmlIo.XlsxFileType, rootReadWriter: OpenXmlIo.ReadWrite<T>, prepForWrite: (xmlDoc: OpenXmlIo.WriterContext, inst: T) => void) {
         this.fileInfo = fileInfo;
         this.rootReadWriter = rootReadWriter;
         this.prepForWrite = prepForWrite;
@@ -71,7 +71,7 @@ class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
         var elem = this.rootReadWriter.write(xmlDoc, data);
 
         var elemDom = <HTMLElement>xmlDoc.dom.childNodes[0];
-        xmlDoc.domHelper.addChilds(elemDom, xmlDoc.domHelper.getChilds(elem));
+        xmlDoc.addChilds(elemDom, xmlDoc.getChilds(elem));
 
         return xmlDoc.dom;
     }

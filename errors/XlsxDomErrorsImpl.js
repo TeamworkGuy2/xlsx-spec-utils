@@ -10,6 +10,12 @@ var XlsxDomErrorsImpl;
         return new Error("Error reading Excel template, missing required '" + nodeName + "' node");
     }
     XlsxDomErrorsImpl.missingNode = missingNode;
+    function expectNode(node, expectedNodeName, parentNodeName, idx, size) {
+        if (node.tagName !== expectedNodeName) {
+            throw unexpectedNode(node.tagName, expectedNodeName, parentNodeName, idx, size);
+        }
+    }
+    XlsxDomErrorsImpl.expectNode = expectNode;
     function unexpectedNode(badNodeName, expectedNodeName, parentNodeName, idx, size) {
         return new Error("Error reading Excel template, unexpected '" + badNodeName + "' node" +
             (expectedNodeName ? ", expected only '" + expectedNodeName + "' nodes" : "") +

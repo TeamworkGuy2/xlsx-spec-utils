@@ -6,6 +6,7 @@ import Comments = require("../xlsx-spec-models/types/Comments");
 import SharedStringTable = require("../xlsx-spec-models/types/SharedStringTable");
 import Stylesheet = require("../xlsx-spec-models/types/Stylesheet");
 import Worksheet = require("../xlsx-spec-models/types/Worksheet");
+import WorksheetDrawing = require("../xlsx-spec-models/types/WorksheetDrawing");
 
 /**
  * @author TeamworkGuy2
@@ -13,12 +14,21 @@ import Worksheet = require("../xlsx-spec-models/types/Worksheet");
  */
 module ExcelTemplateLoad {
 
+    export interface LoadSettings {
+        calcChain?: boolean;
+        comments?: boolean;
+        sharedStrings?: boolean;
+        worksheetDrawing?: boolean;
+    }
+
+
     /** The hope is to eventually implement all files, but these are the only ones currently supported
      */
     export interface ParsedXlsxFileInst {
         calcChain: OpenXml.CalculationChain;
         sharedStrings: OpenXml.SharedStringTable;
         stylesheet: OpenXml.Stylesheet;
+        worksheetDrawing: OpenXml.WorksheetDrawing;
         worksheets: {
             comments: OpenXml.Comments;
             worksheet: OpenXml.Worksheet;
@@ -63,11 +73,11 @@ module ExcelTemplateLoad {
         SharedStrings: new XmlFileReadWriter(XlsxFileTypes.SharedStrings, SharedStringTable, prepSharedStringsForWrite),
         Styles: new XmlFileReadWriter(XlsxFileTypes.Styles, Stylesheet, prepStylesForWrite),
         Worksheet: new XmlFileReadWriter(XlsxFileTypes.Worksheet, Worksheet, prepWorksheetForWrite),
+        WorksheetDrawing: new XmlFileReadWriter(XlsxFileTypes.Drawing, WorksheetDrawing, prepDrawingsForWrite),
     };
 
 
     export function readZip<T>(data: Uint8Array, jszip: new (data: Uint8Array) => T): T {
-        var isfile = false;
         var firstByte = data[0];
         if (firstByte !== 0x50) {
             throw new Error("Unsupported file " + firstByte);
@@ -78,46 +88,42 @@ module ExcelTemplateLoad {
 
 
     // ==== prep*ForWrite functions for various XLSX internal files ====
-    function prepCalcChainForWrite(xmlDoc: OpenXmlIo.ParsedFile, inst: OpenXml.CalculationChain) {
+    function prepCalcChainForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.CalculationChain) {
         var calcChainDom = <HTMLElement>xmlDoc.dom.childNodes[0];
-        xmlDoc.domHelper.removeChilds(calcChainDom);
+        xmlDoc.removeChilds(calcChainDom);
     }
 
 
-    function prepCommentsForWrite(xmlDoc: OpenXmlIo.ParsedFile, inst: OpenXml.Comments) {
+    function prepCommentsForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.Comments) {
         var commentsDom = <HTMLElement>xmlDoc.dom.childNodes[0];
-        xmlDoc.domHelper.removeChilds(commentsDom);
+        xmlDoc.removeChilds(commentsDom);
     }
 
 
-    function prepSharedStringsForWrite(xmlDoc: OpenXmlIo.ParsedFile, inst: OpenXml.SharedStringTable) {
+    function prepDrawingsForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.WorksheetDrawing) {
+        var commentsDom = <HTMLElement>xmlDoc.dom.childNodes[0];
+        xmlDoc.removeChilds(commentsDom);
+    }
+
+
+    function prepSharedStringsForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.SharedStringTable) {
         var dom = xmlDoc.dom;
         var sharedStrings = <HTMLElement>dom.childNodes[0];
-        xmlDoc.domHelper.removeNodeAttr(sharedStrings, "count");
-        xmlDoc.domHelper.removeNodeAttr(sharedStrings, "uniqueCount");
-        xmlDoc.domHelper.removeChilds(sharedStrings);
+        xmlDoc.removeNodeAttr(sharedStrings, "count");
+        xmlDoc.removeNodeAttr(sharedStrings, "uniqueCount");
+        xmlDoc.removeChilds(sharedStrings);
     }
 
 
-    function prepStylesForWrite(xmlDoc: OpenXmlIo.ParsedFile, inst: OpenXml.Stylesheet) {
+    function prepStylesForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.Stylesheet) {
         var commentsDom = <HTMLElement>xmlDoc.dom.childNodes[0];
-        xmlDoc.domHelper.removeChilds(commentsDom);
+        xmlDoc.removeChilds(commentsDom);
     }
 
 
-    function prepWorksheetForWrite(xmlDoc: OpenXmlIo.ParsedFile, inst: OpenXml.Worksheet) {
+    function prepWorksheetForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.Worksheet) {
         var worksheet = <HTMLElement>xmlDoc.dom.childNodes[0];
-        xmlDoc.domHelper.removeChilds(worksheet);
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "dimension"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "sheetViews"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "sheetFormatPr"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "cols"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "sheetData"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "pageMargins"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "pageSetup"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "headerFooter"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "drawing"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "legacyDrawing"));
+        xmlDoc.removeChilds(worksheet);
 
         WorksheetUtil.updateBounds(inst);
     }
@@ -125,20 +131,22 @@ module ExcelTemplateLoad {
 
     // ==== functions for reading/writing higher level ParsedXlsxFileInst objects to JSZip files ====
 
-    export function loadExcelFileInst(readFileData: (path: string) => string): ExcelTemplateLoad.ParsedXlsxFileInst {
+    export function loadXlsxFile(loadSettings: LoadSettings, readFileData: (path: string) => string): ParsedXlsxFileInst {
         // TODO load number of sheets from '[Content_Types].xml' or 'xl/workbook.xml', also need to add media/images/itemProps parsing
         var sheetNum = 1;
 
-        var calcChain = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.CalcChain);
-        var comments = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Comments);
-        var sharedStrings = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.SharedStrings);
-        var worksheet = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Worksheet);
-        var stylesheet = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Styles);
+        var calcChain = (loadSettings.calcChain !== false ? loadXmlFile(sheetNum, readFileData, XlsxFiles.CalcChain) : null);
+        var comments = (loadSettings.comments !== false ? loadXmlFile(sheetNum, readFileData, XlsxFiles.Comments) : null);
+        var sharedStrings = (loadSettings.sharedStrings !== false ? loadXmlFile(sheetNum, readFileData, XlsxFiles.SharedStrings) : null);
+        var worksheetDrawing = (loadSettings.worksheetDrawing !== false ? loadXmlFile(sheetNum, readFileData, XlsxFiles.WorksheetDrawing) : null);
+        var worksheet = loadXmlFile(sheetNum, readFileData, XlsxFiles.Worksheet);
+        var stylesheet = loadXmlFile(sheetNum, readFileData, XlsxFiles.Styles);
 
         return {
             calcChain,
             sharedStrings,
             stylesheet,
+            worksheetDrawing,
             worksheets: [{
                 comments,
                 worksheet,
@@ -147,19 +155,20 @@ module ExcelTemplateLoad {
     }
 
 
-    export function saveExcelFileInst(data: ExcelTemplateLoad.ParsedXlsxFileInst, writeFileData: (path: string, data: string) => void) {
+    export function saveXlsxFile(data: ParsedXlsxFileInst, writeFileData: (path: string, data: string) => void) {
         // these 'files' are shared all worksheets in a workbook
-        if (data.calcChain != null) { saveXmlFile(null, writeFileData, data.calcChain, ExcelTemplateLoad.XlsxFiles.CalcChain); }
-        if (data.sharedStrings != null) { saveXmlFile(null, writeFileData, data.sharedStrings, ExcelTemplateLoad.XlsxFiles.SharedStrings); }
-        saveXmlFile(null, writeFileData, data.stylesheet, ExcelTemplateLoad.XlsxFiles.Styles);
+        if (data.calcChain != null) { saveXmlFile(null, writeFileData, data.calcChain, XlsxFiles.CalcChain); }
+        if (data.sharedStrings != null) { saveXmlFile(null, writeFileData, data.sharedStrings, XlsxFiles.SharedStrings); }
+        if (data.worksheetDrawing != null) { saveXmlFile(1, writeFileData, data.worksheetDrawing, XlsxFiles.WorksheetDrawing); }
+        saveXmlFile(null, writeFileData, data.stylesheet, XlsxFiles.Styles);
 
         for (var i = 0, size = data.worksheets.length; i < size; i++) {
             // TODO load number of sheets from '[Content_Types].xml' or 'xl/workbook.xml', also fix this to work with media, images, itemProps
             var sheetNum = i + 1;
             var worksheet = data.worksheets[i];
 
-            if (worksheet.comments != null) { saveXmlFile(sheetNum, writeFileData, worksheet.comments, ExcelTemplateLoad.XlsxFiles.Comments); }
-            saveXmlFile(sheetNum, writeFileData, worksheet.worksheet, ExcelTemplateLoad.XlsxFiles.Worksheet);
+            if (worksheet.comments != null) { saveXmlFile(sheetNum, writeFileData, worksheet.comments, XlsxFiles.Comments); }
+            saveXmlFile(sheetNum, writeFileData, worksheet.worksheet, XlsxFiles.Worksheet);
         }
     }
 

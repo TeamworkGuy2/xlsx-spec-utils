@@ -100,9 +100,9 @@ module CellRefUtil {
     export function mergeCellSpans(offsetIdx: number, length: number, spansStr: string): { spans: string; min: number; max: number; } {
         var min1 = offsetIdx + 1;
         var max1 = offsetIdx + length;
-        var [min2, max2] = <number[]><any>spansStr.split(":");
-        min2 = parseInt(min2);
-        max2 = parseInt(max2);
+        var [min2Str, max2Str] = spansStr.split(":");
+        var min2 = parseInt(min2);
+        var max2 = parseInt(max2);
         var min = Math.min(min1, min2);
         var max = Math.max(max1, max2);
         return { spans: min + ":" + max, min, max }; // 1 based, inclusive

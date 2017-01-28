@@ -184,7 +184,7 @@ module StylesheetUtil {
             shadow: null,
             strike: null,
             sz: { val: fontSize },
-            u: underline != null ? { val: underline } : null,
+            u: underline != null ? { val: <OpenXml.ST_UnderlineValues>underline } : null,
             vertAlign: null,
         };
         var idx = stylesheet.fonts.fonts.push(fnt) - 1;
@@ -304,7 +304,7 @@ module StylesheetUtil {
      */
     export function _createBorder(borderData: SimpleBorderProperty): OpenXml.BorderProperty {
         return borderData == null ? null : {
-            style: borderData.style,
+            style: <OpenXml.ST_BorderStyle>borderData.style,
             color: { auto: borderData.auto, indexed: borderData.indexed, rgb: borderData.rgb, theme: borderData.theme, tint: borderData.tint }
         };
     }

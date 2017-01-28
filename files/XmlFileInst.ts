@@ -10,29 +10,25 @@ import XlsxDomErrorsImpl = require("../errors/XlsxDomErrorsImpl");
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
-class XmlFileInst implements OpenXmlIo.ParsedFile {
+class XmlFileInst extends DomBuilderHelper implements OpenXmlIo.ReaderContext, OpenXmlIo.WriterContext {
     /** this XML file's parsed DOM */
     public dom: XMLDocument;
     /** a DOM builder for this XML document */
     public domBldr: DomBuilderFactory;
-    /** a XLSX DOM manipulation utility */
-    public domHelper: DomBuilderHelper;
-    /** utlities for reading XML child elements */
-    public readOpenXml: OpenXmlIo.ReadOpenXmlElement;
-    /** utlities for writing XML child elements */
-    public writeOpenXml: OpenXmlIo.WriteOpenXmlElement;
+    /** read/write XLSX DOM element utility functions */
+    public readMulti: OpenXmlIo.ElementsReader;
+    public writeMulti: OpenXmlIo.ElementsWriter;
     /** a validator for XLSX DOM elements */
     public validator: DomValidate;
 
 
     constructor(dom: XMLDocument) {
+        super(dom, XlsxDomErrorsImpl);
         this.dom = dom;
         this.domBldr = new DomBuilderFactory(dom);
-        this.domHelper = new DomBuilderHelper(dom, XlsxDomErrorsImpl);
 
-        var readWriteElements = new XmlFileInst.ReadWriteOpenXmlElementImpl();
-        this.readOpenXml = readWriteElements;
-        this.writeOpenXml = readWriteElements;
+        this.readMulti = (reader, elems, expectedElemName?) => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
+        this.writeMulti = (writer, insts, keysOrExpectedElemName?) => XmlFileInst.writeMulti(this, writer, insts, keysOrExpectedElemName);
 
         this.validator = XlsxDomErrorsImpl;
     }
@@ -42,46 +38,39 @@ class XmlFileInst implements OpenXmlIo.ParsedFile {
         return new XmlFileInst(dom);
     }
 
-}
-
-module XmlFileInst {
-
 
     /** Provides generic logic for reading/writing an array of OpenXml elements using a reader/writer for a single element of the same type
      */
-    export class ReadWriteOpenXmlElementImpl implements OpenXmlIo.ReadOpenXmlElement, OpenXmlIo.WriteOpenXmlElement {
 
-        public readMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName?: string): T[] {
-            var res: T[] = [];
-            for (var i = 0, size = elems.length; i < size; i++) {
-                var elem = elems[i];
-                res.push((<OpenXmlIo.ReadFunc<T>>reader)(xmlDoc, elem, expectedElemName));
-            }
-            return res;
+    public static readMulti<T>(xmlDoc: OpenXmlIo.ReaderContext, reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName?: string): T[] {
+        var res: T[] = [];
+        for (var i = 0, size = elems.length; i < size; i++) {
+            var elem = elems[i];
+            res.push((<OpenXmlIo.ReadFunc<T>>reader)(xmlDoc, elem, expectedElemName));
         }
+        return res;
+    }
 
 
-        public writeMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, writer: OpenXmlIo.WriteFuncNamed<T>, insts: T[], expectedElemName?: string): HTMLElement[];
-        public writeMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, writer: OpenXmlIo.WriteFunc<T>, insts: { [id: string]: T }, keys?: string[]): HTMLElement[]
-        public writeMulti<T>(xmlDoc: OpenXmlIo.ParsedFile, writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): HTMLElement[] {
-            var res: HTMLElement[] = [];
-            if (Array.isArray(keysOrExpectedElemName)) {
-                var keys = keysOrExpectedElemName;
-                for (var i = 0, size = keys.length || (<T[]>insts).length; i < size; i++) {
-                    var inst = <T>insts[keys[i]];
-                    res.push((<OpenXmlIo.WriteFunc<T>>writer)(xmlDoc, inst));
-                }
+    public static writeMulti<T>(xmlDoc: OpenXmlIo.WriterContext, writer: OpenXmlIo.WriteFuncNamed<T>, insts: T[], expectedElemName?: string): HTMLElement[];
+    public static writeMulti<T>(xmlDoc: OpenXmlIo.WriterContext, writer: OpenXmlIo.WriteFunc<T>, insts: { [id: string]: T }, keys?: string[]): HTMLElement[]
+    public static writeMulti<T>(xmlDoc: OpenXmlIo.WriterContext, writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): HTMLElement[] {
+        var res: HTMLElement[] = [];
+        if (Array.isArray(keysOrExpectedElemName)) {
+            var keys = keysOrExpectedElemName;
+            for (var i = 0, size = keys.length || (<T[]>insts).length; i < size; i++) {
+                var inst = <T>insts[keys[i]];
+                res.push((<OpenXmlIo.WriteFunc<T>>writer)(xmlDoc, inst));
             }
-            else {
-                var expectedElemName = keysOrExpectedElemName;
-                for (var i = 0, size = (<T[]>insts).length; i < size; i++) {
-                    var inst = <T>insts[i];
-                    res.push((<OpenXmlIo.WriteFunc<T>>writer)(xmlDoc, inst, expectedElemName));
-                }
-            }
-            return res;
         }
-
+        else {
+            var expectedElemName = keysOrExpectedElemName;
+            for (var i = 0, size = (<T[]>insts).length; i < size; i++) {
+                var inst = <T>insts[i];
+                res.push((<OpenXmlIo.WriteFunc<T>>writer)(xmlDoc, inst, expectedElemName));
+            }
+        }
+        return res;
     }
 
 }

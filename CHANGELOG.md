@@ -4,9 +4,30 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.1.3](N/A) - 2016-11-12
+### [0.2.0](N/A) - 2017-01-28
 #### Added
-Added missing documentation to the `/files/` classes, `open-xml-io.d.ts`, and `StylesheetUtil.ts'
+* OpenXmlIo ReadWrite and ReadWriteNamed interfaces
+* Added XlsxDomErrorsImpl.expectNode() to match new `dom-builder@0.2.0` definition
+* XlsxReaderWriter support for WorksheetDrawing part (i.e. 'xl/drawings/drawing#.xml')
+* XlsxReaderWriter.loadXlsxFile() new `loadSettings` parameter to allow caller to skip parsing various parts of the spreadsheet
+
+#### Changed
+* Major refactoring to simplify and denest interfaces, split open-xml reading/writing into seperate interfaces
+  * OpenXmlIo.ParsedFile refactored into OpenXmlIo.ReaderContext and OpenXmlIo.WriterContext both of which now extend DomBuilderHelper
+  * XmlFileInst now contains readMulti() and writeMulti() instead of nested 'readOpenXml' and 'writeOpenXml' properties
+  * XmlFileInst now directly extends DomBuilderHelper instead of having 'domHelper' property
+  * Renamed ReadOpenXmlElement -> ElementsReader and is a function interface rather than containing 'readMulti' method definition
+  * WriteOpenXmlElement -> ElementsWriter and is a function interface rather than containing 'writeMulti' method definition
+  * Renamed XlsxReaderWriter loadExcelFileInst() -> loadXlsxFile() and saveExcelFileInst() -> saveXlsxFile()
+
+#### Removed
+* Removed Read, ReadNamed, Write, WriteNamed interfaces, see new ReadWrite and ReadWriteNamed interfaces
+
+
+--------
+### [0.1.3](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/a6549b833a80912d52724a9ed3074a8865e8e884) - 2016-11-12
+#### Added
+Added missing documentation to the `/files/` classes, `open-xml-io.d.ts`, and `StylesheetUtil.ts`
 
 #### Fixed
 `WorksheetUtil.createCellSimpleFormula()` incorrectly picking `cell.val` when `cell.formulaString` was non-null

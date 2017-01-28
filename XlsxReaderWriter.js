@@ -7,6 +7,7 @@ var Comments = require("../xlsx-spec-models/types/Comments");
 var SharedStringTable = require("../xlsx-spec-models/types/SharedStringTable");
 var Stylesheet = require("../xlsx-spec-models/types/Stylesheet");
 var Worksheet = require("../xlsx-spec-models/types/Worksheet");
+var WorksheetDrawing = require("../xlsx-spec-models/types/WorksheetDrawing");
 /**
  * @author TeamworkGuy2
  * @since 2016-5-27
@@ -35,9 +36,9 @@ var ExcelTemplateLoad;
         SharedStrings: new XmlFileReadWriter(ExcelTemplateLoad.XlsxFileTypes.SharedStrings, SharedStringTable, prepSharedStringsForWrite),
         Styles: new XmlFileReadWriter(ExcelTemplateLoad.XlsxFileTypes.Styles, Stylesheet, prepStylesForWrite),
         Worksheet: new XmlFileReadWriter(ExcelTemplateLoad.XlsxFileTypes.Worksheet, Worksheet, prepWorksheetForWrite),
+        WorksheetDrawing: new XmlFileReadWriter(ExcelTemplateLoad.XlsxFileTypes.Drawing, WorksheetDrawing, prepDrawingsForWrite),
     };
     function readZip(data, jszip) {
-        var isfile = false;
         var firstByte = data[0];
         if (firstByte !== 0x50) {
             throw new Error("Unsupported file " + firstByte);
@@ -49,65 +50,64 @@ var ExcelTemplateLoad;
     // ==== prep*ForWrite functions for various XLSX internal files ====
     function prepCalcChainForWrite(xmlDoc, inst) {
         var calcChainDom = xmlDoc.dom.childNodes[0];
-        xmlDoc.domHelper.removeChilds(calcChainDom);
+        xmlDoc.removeChilds(calcChainDom);
     }
     function prepCommentsForWrite(xmlDoc, inst) {
         var commentsDom = xmlDoc.dom.childNodes[0];
-        xmlDoc.domHelper.removeChilds(commentsDom);
+        xmlDoc.removeChilds(commentsDom);
+    }
+    function prepDrawingsForWrite(xmlDoc, inst) {
+        var commentsDom = xmlDoc.dom.childNodes[0];
+        xmlDoc.removeChilds(commentsDom);
     }
     function prepSharedStringsForWrite(xmlDoc, inst) {
         var dom = xmlDoc.dom;
         var sharedStrings = dom.childNodes[0];
-        xmlDoc.domHelper.removeNodeAttr(sharedStrings, "count");
-        xmlDoc.domHelper.removeNodeAttr(sharedStrings, "uniqueCount");
-        xmlDoc.domHelper.removeChilds(sharedStrings);
+        xmlDoc.removeNodeAttr(sharedStrings, "count");
+        xmlDoc.removeNodeAttr(sharedStrings, "uniqueCount");
+        xmlDoc.removeChilds(sharedStrings);
     }
     function prepStylesForWrite(xmlDoc, inst) {
         var commentsDom = xmlDoc.dom.childNodes[0];
-        xmlDoc.domHelper.removeChilds(commentsDom);
+        xmlDoc.removeChilds(commentsDom);
     }
     function prepWorksheetForWrite(xmlDoc, inst) {
         var worksheet = xmlDoc.dom.childNodes[0];
-        xmlDoc.domHelper.removeChilds(worksheet);
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "dimension"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "sheetViews"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "sheetFormatPr"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "cols"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "sheetData"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "pageMargins"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "pageSetup"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "headerFooter"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "drawing"));
-        //xmlDoc.domHelper.removeChilds(xmlDoc.domHelper.queryOneChild(worksheet, "legacyDrawing"));
+        xmlDoc.removeChilds(worksheet);
         WorksheetUtil.updateBounds(inst);
     }
     // ==== functions for reading/writing higher level ParsedXlsxFileInst objects to JSZip files ====
-    function loadExcelFileInst(readFileData) {
+    function loadXlsxFile(loadSettings, readFileData) {
         // TODO load number of sheets from '[Content_Types].xml' or 'xl/workbook.xml', also need to add media/images/itemProps parsing
         var sheetNum = 1;
-        var calcChain = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.CalcChain);
-        var comments = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Comments);
-        var sharedStrings = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.SharedStrings);
+        var calcChain = (loadSettings.calcChain !== false ? loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.CalcChain) : null);
+        var comments = (loadSettings.comments !== false ? loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Comments) : null);
+        var sharedStrings = (loadSettings.sharedStrings !== false ? loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.SharedStrings) : null);
+        var worksheetDrawing = (loadSettings.worksheetDrawing !== false ? loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.WorksheetDrawing) : null);
         var worksheet = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Worksheet);
         var stylesheet = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Styles);
         return {
             calcChain: calcChain,
             sharedStrings: sharedStrings,
             stylesheet: stylesheet,
+            worksheetDrawing: worksheetDrawing,
             worksheets: [{
                     comments: comments,
                     worksheet: worksheet,
                 }],
         };
     }
-    ExcelTemplateLoad.loadExcelFileInst = loadExcelFileInst;
-    function saveExcelFileInst(data, writeFileData) {
+    ExcelTemplateLoad.loadXlsxFile = loadXlsxFile;
+    function saveXlsxFile(data, writeFileData) {
         // these 'files' are shared all worksheets in a workbook
         if (data.calcChain != null) {
             saveXmlFile(null, writeFileData, data.calcChain, ExcelTemplateLoad.XlsxFiles.CalcChain);
         }
         if (data.sharedStrings != null) {
             saveXmlFile(null, writeFileData, data.sharedStrings, ExcelTemplateLoad.XlsxFiles.SharedStrings);
+        }
+        if (data.worksheetDrawing != null) {
+            saveXmlFile(1, writeFileData, data.worksheetDrawing, ExcelTemplateLoad.XlsxFiles.WorksheetDrawing);
         }
         saveXmlFile(null, writeFileData, data.stylesheet, ExcelTemplateLoad.XlsxFiles.Styles);
         for (var i = 0, size = data.worksheets.length; i < size; i++) {
@@ -120,7 +120,7 @@ var ExcelTemplateLoad;
             saveXmlFile(sheetNum, writeFileData, worksheet.worksheet, ExcelTemplateLoad.XlsxFiles.Worksheet);
         }
     }
-    ExcelTemplateLoad.saveExcelFileInst = saveExcelFileInst;
+    ExcelTemplateLoad.saveXlsxFile = saveXlsxFile;
     function loadXmlFile(sheetNum, readFileData, loader) {
         var info = loader.fileInfo;
         // TODO the path template token may not be a sheet number, could be a resource identifier (i.e. an image or item prop number)

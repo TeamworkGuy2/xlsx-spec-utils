@@ -11,6 +11,13 @@ module XlsxDomErrorsImpl {
     }
 
 
+    export function expectNode(node: Element, expectedNodeName: string, parentNodeName: string, idx?: number, size?: number) {
+        if (node.tagName !== expectedNodeName) {
+            throw unexpectedNode(node.tagName, expectedNodeName, parentNodeName, idx, size);
+        }
+    }
+
+
     export function unexpectedNode(badNodeName: string, expectedNodeName?: string, parentNodeName?: string, idx?: number, size?: number) {
         return new Error("Error reading Excel template, unexpected '" + badNodeName + "' node" +
             (expectedNodeName ? ", expected only '" + expectedNodeName + "' nodes" : "") +
