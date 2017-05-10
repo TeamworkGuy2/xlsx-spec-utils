@@ -94,8 +94,8 @@ var CellRefUtil;
         var min1 = offsetIdx + 1;
         var max1 = offsetIdx + length;
         var _a = spansStr.split(":"), min2Str = _a[0], max2Str = _a[1];
-        var min2 = parseInt(min2);
-        var max2 = parseInt(max2);
+        var min2 = parseInt(min2Str);
+        var max2 = parseInt(max2Str);
         var min = Math.min(min1, min2);
         var max = Math.max(max1, max2);
         return { spans: min + ":" + max, min: min, max: max }; // 1 based, inclusive

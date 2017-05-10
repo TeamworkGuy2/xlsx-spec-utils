@@ -4,7 +4,16 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.2.0](N/A) - 2017-01-28
+### [0.2.1](N/A) - 2017-05-09
+#### Added
+* Updated to TypeScript 2.3, add tsconfig.json, use @types/ definitions
+
+#### Fixed
+* CellRefUtil.mergeCellSpans() typo bug
+
+
+--------
+### [0.2.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/db984736c9c9e6d314404c10834c620d64ca7c21) - 2017-01-28
 #### Added
 * OpenXmlIo ReadWrite and ReadWriteNamed interfaces
 * Added XlsxDomErrorsImpl.expectNode() to match new `dom-builder@0.2.0` definition

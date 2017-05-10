@@ -101,8 +101,8 @@ module CellRefUtil {
         var min1 = offsetIdx + 1;
         var max1 = offsetIdx + length;
         var [min2Str, max2Str] = spansStr.split(":");
-        var min2 = parseInt(min2);
-        var max2 = parseInt(max2);
+        var min2 = parseInt(min2Str);
+        var max2 = parseInt(max2Str);
         var min = Math.min(min1, min2);
         var max = Math.max(max1, max2);
         return { spans: min + ":" + max, min, max }; // 1 based, inclusive
