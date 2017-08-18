@@ -1,14 +1,15 @@
 {
   "name": "xlsx-spec-utils",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "TypeScript Open XML XLSX read/write utils",
   "dependencies": {
-    "ts-dom-builder": "~0.1.0"
+    "dom-builder": "~0.4.1",
+    "xlsx-spec-models": "~0.3.0"
   },
   "devDependencies": {
-    "chai": "~3.5.0",
-    "mocha": "~3.3.0",
-    "typescript": "~2.3.0"
+    "chai": "~4.1.0",
+    "mocha": "~3.5.0",
+    "typescript": "~2.4.0"
   },
   "scripts": {
     "test": "mocha -u tdd --recursive"

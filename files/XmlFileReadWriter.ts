@@ -9,7 +9,7 @@ class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
     public fileInfo: OpenXmlIo.XlsxFileType;
     private prepForWrite: (xmlDoc: OpenXmlIo.WriterContext, inst: T) => void;
     private rootReadWriter: OpenXmlIo.ReadWrite<T>;
-    private lastReadXmlDoc: OpenXmlIo.WriterContext;
+    private lastReadXmlDoc: XmlFileInst.XmlDocFile;
 
 
     /** Create an XML file reader/writer
@@ -70,7 +70,7 @@ class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
         this.prepForWrite(xmlDoc, data);
         var elem = this.rootReadWriter.write(xmlDoc, data);
 
-        var elemDom = <HTMLElement>xmlDoc.dom.childNodes[0];
+        var elemDom = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
         xmlDoc.addChilds(elemDom, xmlDoc.getChilds(elem));
 
         return xmlDoc.dom;

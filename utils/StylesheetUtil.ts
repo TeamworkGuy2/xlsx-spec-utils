@@ -249,7 +249,7 @@ module StylesheetUtil {
 
     /** Create default 'extList' element found in XLSX spreadsheets
      */
-    export function createDefaultExtLst(domBldr: DomBuilderFactory): Element {
+    export function createDefaultExtLst(domBldr: DomBuilderFactory): ElementLike {
         return domBldr.create("extLst")
             .addChild(domBldr.create("ext").attrString("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}").attrString("xmlns:x14", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main")
                 .addChild(domBldr.create("x14:slicerStyles").attrString("defaultSlicerStyle", "SlicerStyleLight1").element).element)

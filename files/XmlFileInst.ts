@@ -10,39 +10,63 @@ import XlsxDomErrorsImpl = require("../errors/XlsxDomErrorsImpl");
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
-class XmlFileInst extends DomBuilderHelper implements OpenXmlIo.ReaderContext, OpenXmlIo.WriterContext {
-    /** this XML file's parsed DOM */
-    public dom: XMLDocument;
-    /** a DOM builder for this XML document */
-    public domBldr: DomBuilderFactory;
-    /** read/write XLSX DOM element utility functions */
-    public readMulti: OpenXmlIo.ElementsReader;
-    public writeMulti: OpenXmlIo.ElementsWriter;
-    /** a validator for XLSX DOM elements */
-    public validator: DomValidate;
+module XmlFileInst {
+
+    export class DocLikeFile extends DomBuilderHelper implements OpenXmlIo.ReaderContext, OpenXmlIo.WriterContext {
+        /** this XML file's parsed DOM */
+        public dom: DocumentLike;
+        /** a DOM builder for this XML document */
+        public domBldr: DomBuilderFactory<DocumentLike>;
+        /** read/write XLSX DOM element utility functions */
+        public readMulti: OpenXmlIo.ElementsReader;
+        public writeMulti: OpenXmlIo.ElementsWriter;
+        /** a validator for XLSX DOM elements */
+        public validator: DomValidate;
+
+        constructor(dom: DocumentLike) {
+            super(dom, XlsxDomErrorsImpl);
+        }
+
+    }
 
 
-    constructor(dom: XMLDocument) {
-        super(dom, XlsxDomErrorsImpl);
+    export class XmlDocFile extends DomBuilderHelper implements OpenXmlIo.ReaderContext, OpenXmlIo.WriterContext {
+        /** this XML file's parsed DOM */
+        public dom: XMLDocument;
+        /** a DOM builder for this XML document */
+        public domBldr: DomBuilderFactory<XMLDocument>;
+        /** read/write XLSX DOM element utility functions */
+        public readMulti: OpenXmlIo.ElementsReader;
+        public writeMulti: OpenXmlIo.ElementsWriter;
+        /** a validator for XLSX DOM elements */
+        public validator: DomValidate;
+
+        constructor(dom: XMLDocument) {
+            super(dom, XlsxDomErrorsImpl);
+        }
+
+    }
+
+
+    export function newInst<D extends DocumentLike>(dom: XMLDocument): XmlDocFile;
+    export function newInst<D extends DocumentLike>(dom: D): DocLikeFile;
+    export function newInst<D extends DocumentLike>(dom: D) {
+        var inst = ((<any>dom).childNodes != null ? new XmlDocFile(<XMLDocument><any>dom) : new DocLikeFile(dom));
         this.dom = dom;
-        this.domBldr = new DomBuilderFactory(dom);
+        this.domBldr = new DomBuilderFactory<D>(dom);
 
         this.readMulti = (reader, elems, expectedElemName?) => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
         this.writeMulti = (writer, insts, keysOrExpectedElemName?) => XmlFileInst.writeMulti(this, writer, insts, keysOrExpectedElemName);
 
         this.validator = XlsxDomErrorsImpl;
-    }
-
-
-    public static newInst(dom: XMLDocument) {
-        return new XmlFileInst(dom);
+        return inst;
     }
 
 
     /** Provides generic logic for reading/writing an array of OpenXml elements using a reader/writer for a single element of the same type
      */
 
-    public static readMulti<T>(xmlDoc: OpenXmlIo.ReaderContext, reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName?: string): T[] {
+    export function readMulti<T>(xmlDoc: OpenXmlIo.ReaderContext, reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName?: string): T[] {
         var res: T[] = [];
         for (var i = 0, size = elems.length; i < size; i++) {
             var elem = elems[i];
@@ -52,10 +76,10 @@ class XmlFileInst extends DomBuilderHelper implements OpenXmlIo.ReaderContext, O
     }
 
 
-    public static writeMulti<T>(xmlDoc: OpenXmlIo.WriterContext, writer: OpenXmlIo.WriteFuncNamed<T>, insts: T[], expectedElemName?: string): HTMLElement[];
-    public static writeMulti<T>(xmlDoc: OpenXmlIo.WriterContext, writer: OpenXmlIo.WriteFunc<T>, insts: { [id: string]: T }, keys?: string[]): HTMLElement[]
-    public static writeMulti<T>(xmlDoc: OpenXmlIo.WriterContext, writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): HTMLElement[] {
-        var res: HTMLElement[] = [];
+    export function writeMulti<T>(xmlDoc: OpenXmlIo.WriterContext, writer: OpenXmlIo.WriteFuncNamed<T>, insts: T[], expectedElemName?: string): ElementLike[];
+    export function writeMulti<T>(xmlDoc: OpenXmlIo.WriterContext, writer: OpenXmlIo.WriteFunc<T>, insts: { [id: string]: T }, keys?: string[]): ElementLike[]
+    export function writeMulti<T>(xmlDoc: OpenXmlIo.WriterContext, writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): ElementLike[] {
+        var res: ElementLike[] = [];
         if (Array.isArray(keysOrExpectedElemName)) {
             var keys = keysOrExpectedElemName;
             for (var i = 0, size = keys.length || (<T[]>insts).length; i < size; i++) {

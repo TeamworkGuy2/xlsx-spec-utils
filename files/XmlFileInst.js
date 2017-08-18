@@ -20,31 +20,47 @@ var XlsxDomErrorsImpl = require("../errors/XlsxDomErrorsImpl");
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
-var XmlFileInst = (function (_super) {
-    __extends(XmlFileInst, _super);
-    function XmlFileInst(dom) {
-        var _this = _super.call(this, dom, XlsxDomErrorsImpl) || this;
-        _this.dom = dom;
-        _this.domBldr = new DomBuilderFactory(dom);
-        _this.readMulti = function (reader, elems, expectedElemName) { return XmlFileInst.readMulti(_this, reader, elems, expectedElemName); };
-        _this.writeMulti = function (writer, insts, keysOrExpectedElemName) { return XmlFileInst.writeMulti(_this, writer, insts, keysOrExpectedElemName); };
-        _this.validator = XlsxDomErrorsImpl;
-        return _this;
+var XmlFileInst;
+(function (XmlFileInst) {
+    var DocLikeFile = (function (_super) {
+        __extends(DocLikeFile, _super);
+        function DocLikeFile(dom) {
+            return _super.call(this, dom, XlsxDomErrorsImpl) || this;
+        }
+        return DocLikeFile;
+    }(DomBuilderHelper));
+    XmlFileInst.DocLikeFile = DocLikeFile;
+    var XmlDocFile = (function (_super) {
+        __extends(XmlDocFile, _super);
+        function XmlDocFile(dom) {
+            return _super.call(this, dom, XlsxDomErrorsImpl) || this;
+        }
+        return XmlDocFile;
+    }(DomBuilderHelper));
+    XmlFileInst.XmlDocFile = XmlDocFile;
+    function newInst(dom) {
+        var _this = this;
+        var inst = (dom.childNodes != null ? new XmlDocFile(dom) : new DocLikeFile(dom));
+        this.dom = dom;
+        this.domBldr = new DomBuilderFactory(dom);
+        this.readMulti = function (reader, elems, expectedElemName) { return XmlFileInst.readMulti(_this, reader, elems, expectedElemName); };
+        this.writeMulti = function (writer, insts, keysOrExpectedElemName) { return XmlFileInst.writeMulti(_this, writer, insts, keysOrExpectedElemName); };
+        this.validator = XlsxDomErrorsImpl;
+        return inst;
     }
-    XmlFileInst.newInst = function (dom) {
-        return new XmlFileInst(dom);
-    };
+    XmlFileInst.newInst = newInst;
     /** Provides generic logic for reading/writing an array of OpenXml elements using a reader/writer for a single element of the same type
      */
-    XmlFileInst.readMulti = function (xmlDoc, reader, elems, expectedElemName) {
+    function readMulti(xmlDoc, reader, elems, expectedElemName) {
         var res = [];
         for (var i = 0, size = elems.length; i < size; i++) {
             var elem = elems[i];
             res.push(reader(xmlDoc, elem, expectedElemName));
         }
         return res;
-    };
-    XmlFileInst.writeMulti = function (xmlDoc, writer, insts, keysOrExpectedElemName) {
+    }
+    XmlFileInst.readMulti = readMulti;
+    function writeMulti(xmlDoc, writer, insts, keysOrExpectedElemName) {
         var res = [];
         if (Array.isArray(keysOrExpectedElemName)) {
             var keys = keysOrExpectedElemName;
@@ -61,7 +77,7 @@ var XmlFileInst = (function (_super) {
             }
         }
         return res;
-    };
-    return XmlFileInst;
-}(DomBuilderHelper));
+    }
+    XmlFileInst.writeMulti = writeMulti;
+})(XmlFileInst || (XmlFileInst = {}));
 module.exports = XmlFileInst;

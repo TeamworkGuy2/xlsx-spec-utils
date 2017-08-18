@@ -4,7 +4,25 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.2.1](N/A) - 2017-05-09
+### [0.3.0](N/A) - 2017-08-18
+#### Added
+* `Workbook` file types and reader/writer added to XlsxReaderWriter
+* Added `XlsxFileType.getXmlFilePath()`
+* Added `utils/RelationshipsUtil`
+
+#### Changed
+* Updated to TypeScript 2.4
+* Updated to `xlsx-spec-models@0.3.0` which includes a `dom-builder@0.4.1` update
+  * XmlFileInst is no longer a class, it is now a module with two sub-classes: `DocLikeFile` and `XmlDocFile`, use XmlFileInst.newInst() exclusively instead of calling `new XmlFileInst()` as a constructor
+  * XmlFileInst.newInst() now accepts `DocumentLike` as well as `XMLDocument`
+  * XmlFileInst.writeMulti() now returns `ElementLike` instead of `HTMLElement`
+
+#### Removed
+* Moved `open-xml-io.d.ts` from this project to the `xlsx-spec-models` library
+
+
+--------
+### [0.2.1](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/7030331800214fcbc056606c43df722585d07276) - 2017-05-09
 #### Added
 * Updated to TypeScript 2.3, add tsconfig.json, use @types/ definitions
 

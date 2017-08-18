@@ -1,5 +1,5 @@
 "use strict";
-/** Common Excel file XML DOM error checking/throwing functions
+/** Common XLSX XML file DOM error checking/throwing functions
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
@@ -7,7 +7,7 @@ var XlsxDomErrorsImpl;
 (function (XlsxDomErrorsImpl) {
     var typeCheck = XlsxDomErrorsImpl; // TODO type-checker
     function missingNode(nodeName) {
-        return new Error("Error reading Excel template, missing required '" + nodeName + "' node");
+        return new Error("Error reading XLSX template, missing required '" + nodeName + "' node");
     }
     XlsxDomErrorsImpl.missingNode = missingNode;
     function expectNode(node, expectedNodeName, parentNodeName, idx, size) {
@@ -17,7 +17,7 @@ var XlsxDomErrorsImpl;
     }
     XlsxDomErrorsImpl.expectNode = expectNode;
     function unexpectedNode(badNodeName, expectedNodeName, parentNodeName, idx, size) {
-        return new Error("Error reading Excel template, unexpected '" + badNodeName + "' node" +
+        return new Error("Error reading XLSX template, unexpected '" + badNodeName + "' node" +
             (expectedNodeName ? ", expected only '" + expectedNodeName + "' nodes" : "") +
             (parentNodeName ? ", of parent node '" + parentNodeName + "'" : "") +
             (idx || size ? (idx ? ", index=" + idx : "") + (size ? ", size=" + size : "") : ""));

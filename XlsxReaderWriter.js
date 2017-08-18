@@ -1,42 +1,56 @@
 "use strict";
+/// <reference path="../xlsx-spec-models/open-xml.d.ts" />
+/// <reference path="../xlsx-spec-models/open-xml-io.d.ts" />
 var XmlFileReadWriter = require("./files/XmlFileReadWriter");
 var XlsxFileType = require("./files/XlsxFileType");
 var WorksheetUtil = require("./utils/WorksheetUtil");
 var CalculationChain = require("../xlsx-spec-models/types/CalculationChain");
 var Comments = require("../xlsx-spec-models/types/Comments");
+var ContentTypes = require("../xlsx-spec-models/types/ContentTypes");
+var Relationships = require("../xlsx-spec-models/types/Relationships");
 var SharedStringTable = require("../xlsx-spec-models/types/SharedStringTable");
 var Stylesheet = require("../xlsx-spec-models/types/Stylesheet");
+var Workbook = require("../xlsx-spec-models/types/Workbook");
 var Worksheet = require("../xlsx-spec-models/types/Worksheet");
 var WorksheetDrawing = require("../xlsx-spec-models/types/WorksheetDrawing");
 /**
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
-var ExcelTemplateLoad;
-(function (ExcelTemplateLoad) {
-    ExcelTemplateLoad.RootNamespaceUrl = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+var XlsxReaderWriter;
+(function (XlsxReaderWriter) {
+    XlsxReaderWriter.RootNamespaceUrl = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
     // XML namespaces and flags for the various sub files inside a zipped Open XML Spreadsheet file
-    ExcelTemplateLoad.XlsxFileTypes = {
+    XlsxReaderWriter.XlsxFileTypes = {
         App: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties", "application/vnd.openxmlformats-officedocument.extended-properties+xml", "docProps/app.xml", "docProps/app.xml", false, null),
         CalcChain: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/calcChain", "application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml", "calcChain.xml", "xl/calcChain.xml", false, null),
         Comments: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments", "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml", "../comments#.xml", "xl/comments#.xml", true, "#"),
+        ContentTypes: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/content-types", "application/vnd.openxmlformats-package.content-types+xml", "[Content_Types].xml", "[Content_Types].xml", false, "#"),
         Core: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties", "application/vnd.openxmlformats-package.core-properties+xml", "docProps/core.xml", "docProps/core.xml", false, null),
         Custom: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties", "application/vnd.openxmlformats-officedocument.custom-properties+xml", "docProps/custom.xml", "docProps/custom.xml", false, null),
         Drawing: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing", "application/vnd.openxmlformats-officedocument.drawing+xml", "../drawings/drawing#.xml", "xl/drawings/drawing#.xml", true, "#"),
         ItemProps: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXmlProps", "application/vnd.openxmlformats-officedocument.customXmlProperties+xml", "itemProps#.xml", "customXml/itemProps#.xml", true, "#"),
+        Rels: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "_rels/.rels", "_rels/.rels", false, "#"),
         SharedStrings: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings", "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml", "sharedStrings.xml", "xl/sharedStrings.xml", false, null),
         Styles: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles", "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml", "styles.xml", "xl/styles.xml", false, null),
         Theme: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme", "application/vnd.openxmlformats-officedocument.theme+xml", "theme/theme#.xml", "xl/theme/theme#.xml", true, "#"),
         Workbook: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml", "xl/workbook.xml", "xl/workbook.xml", false, null),
+        WorkbookRels: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "xl/_rels/workbook.xml.rels", "xl/_rels/workbook.xml.rels", false, "#"),
         Worksheet: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml", "worksheets/sheet#.xml", "xl/worksheets/sheet#.xml", true, "#"),
+        WorksheetRels: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "xl/worksheets/_rels/sheet#.xml.rels", "xl/worksheets/_rels/sheet#.xml.rels", true, "#"),
     };
-    ExcelTemplateLoad.XlsxFiles = {
-        CalcChain: new XmlFileReadWriter(ExcelTemplateLoad.XlsxFileTypes.CalcChain, CalculationChain, prepCalcChainForWrite),
-        Comments: new XmlFileReadWriter(ExcelTemplateLoad.XlsxFileTypes.Comments, Comments, prepCommentsForWrite),
-        SharedStrings: new XmlFileReadWriter(ExcelTemplateLoad.XlsxFileTypes.SharedStrings, SharedStringTable, prepSharedStringsForWrite),
-        Styles: new XmlFileReadWriter(ExcelTemplateLoad.XlsxFileTypes.Styles, Stylesheet, prepStylesForWrite),
-        Worksheet: new XmlFileReadWriter(ExcelTemplateLoad.XlsxFileTypes.Worksheet, Worksheet, prepWorksheetForWrite),
-        WorksheetDrawing: new XmlFileReadWriter(ExcelTemplateLoad.XlsxFileTypes.Drawing, WorksheetDrawing, prepDrawingsForWrite),
+    XlsxReaderWriter.XlsxFiles = {
+        CalcChain: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.CalcChain, CalculationChain, prepCalcChainForWrite),
+        Comments: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Comments, Comments, prepCommentsForWrite),
+        ContentTypes: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.ContentTypes, ContentTypes, prepContentTypesForWrite),
+        Rels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Rels, Relationships, prepRelsForWrite),
+        SharedStrings: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.SharedStrings, SharedStringTable, prepSharedStringsForWrite),
+        Styles: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Styles, Stylesheet, prepStylesForWrite),
+        Workbook: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Workbook, Workbook, prepWorkbookForWrite),
+        WorkbookRels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.WorkbookRels, Relationships, prepRelsForWrite),
+        Worksheet: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Worksheet, Worksheet, prepWorksheetForWrite),
+        WorksheetRels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.WorksheetRels, Relationships, prepRelsForWrite),
+        WorksheetDrawing: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Drawing, WorksheetDrawing, prepDrawingsForWrite),
     };
     function readZip(data, jszip) {
         var firstByte = data[0];
@@ -46,7 +60,7 @@ var ExcelTemplateLoad;
         var zip = new jszip(data);
         return zip;
     }
-    ExcelTemplateLoad.readZip = readZip;
+    XlsxReaderWriter.readZip = readZip;
     // ==== prep*ForWrite functions for various XLSX internal files ====
     function prepCalcChainForWrite(xmlDoc, inst) {
         var calcChainDom = xmlDoc.dom.childNodes[0];
@@ -56,13 +70,20 @@ var ExcelTemplateLoad;
         var commentsDom = xmlDoc.dom.childNodes[0];
         xmlDoc.removeChilds(commentsDom);
     }
+    function prepContentTypesForWrite(xmlDoc, inst) {
+        var contentTypesDom = xmlDoc.dom.childNodes[0];
+        xmlDoc.removeChilds(contentTypesDom);
+    }
     function prepDrawingsForWrite(xmlDoc, inst) {
         var commentsDom = xmlDoc.dom.childNodes[0];
         xmlDoc.removeChilds(commentsDom);
     }
+    function prepRelsForWrite(xmlDoc, inst) {
+        var relsDom = xmlDoc.dom.childNodes[0];
+        xmlDoc.removeChilds(relsDom);
+    }
     function prepSharedStringsForWrite(xmlDoc, inst) {
-        var dom = xmlDoc.dom;
-        var sharedStrings = dom.childNodes[0];
+        var sharedStrings = xmlDoc.dom.childNodes[0];
         xmlDoc.removeNodeAttr(sharedStrings, "count");
         xmlDoc.removeNodeAttr(sharedStrings, "uniqueCount");
         xmlDoc.removeChilds(sharedStrings);
@@ -70,6 +91,10 @@ var ExcelTemplateLoad;
     function prepStylesForWrite(xmlDoc, inst) {
         var commentsDom = xmlDoc.dom.childNodes[0];
         xmlDoc.removeChilds(commentsDom);
+    }
+    function prepWorkbookForWrite(xmlDoc, inst) {
+        var workbook = xmlDoc.dom.childNodes[0];
+        xmlDoc.removeChilds(workbook);
     }
     function prepWorksheetForWrite(xmlDoc, inst) {
         var worksheet = xmlDoc.dom.childNodes[0];
@@ -80,61 +105,179 @@ var ExcelTemplateLoad;
     function loadXlsxFile(loadSettings, readFileData) {
         // TODO load number of sheets from '[Content_Types].xml' or 'xl/workbook.xml', also need to add media/images/itemProps parsing
         var sheetNum = 1;
-        var calcChain = (loadSettings.calcChain !== false ? loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.CalcChain) : null);
-        var comments = (loadSettings.comments !== false ? loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Comments) : null);
-        var sharedStrings = (loadSettings.sharedStrings !== false ? loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.SharedStrings) : null);
-        var worksheetDrawing = (loadSettings.worksheetDrawing !== false ? loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.WorksheetDrawing) : null);
-        var worksheet = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Worksheet);
-        var stylesheet = loadXmlFile(sheetNum, readFileData, ExcelTemplateLoad.XlsxFiles.Styles);
+        var rels = (loadSettings.rels !== false ? loadXmlFile(sheetNum, readFileData, XlsxReaderWriter.XlsxFiles.Rels) : null);
+        var contentTypes = (loadSettings.contentTypes !== false ? loadXmlFile(sheetNum, readFileData, XlsxReaderWriter.XlsxFiles.ContentTypes) : null);
+        var calcChain = (loadSettings.calcChain !== false ? loadXmlFile(sheetNum, readFileData, XlsxReaderWriter.XlsxFiles.CalcChain) : null);
+        var sharedStrings = (loadSettings.sharedStrings !== false ? loadXmlFile(sheetNum, readFileData, XlsxReaderWriter.XlsxFiles.SharedStrings) : null);
+        var workbook = (loadSettings.workbook !== false ? loadXmlFile(sheetNum, readFileData, XlsxReaderWriter.XlsxFiles.Workbook) : null);
+        var workbookRels = (loadSettings.workbookRels !== false ? loadXmlFile(sheetNum, readFileData, XlsxReaderWriter.XlsxFiles.WorkbookRels) : null);
+        var worksheetDrawing = (loadSettings.worksheetDrawing !== false ? loadXmlFile(sheetNum, readFileData, XlsxReaderWriter.XlsxFiles.WorksheetDrawing) : null);
+        var stylesheet = loadXmlFile(sheetNum, readFileData, XlsxReaderWriter.XlsxFiles.Styles);
+        var worksheets = [];
+        for (var i = 0, size = loadSettings.sheetCount; i < size; i++) {
+            var sheetRels = (loadSettings.worksheetRels !== false ? loadXmlFile(i + 1, readFileData, XlsxReaderWriter.XlsxFiles.WorksheetRels) : null);
+            var comments = (loadSettings.comments !== false ? loadXmlFile(i + 1, readFileData, XlsxReaderWriter.XlsxFiles.Comments) : null);
+            var worksheet = loadXmlFile(i + 1, readFileData, XlsxReaderWriter.XlsxFiles.Worksheet);
+            worksheets.push({
+                sheetRels: sheetRels,
+                comments: comments,
+                worksheet: worksheet,
+            });
+        }
         return {
+            rels: rels,
+            contentTypes: contentTypes,
             calcChain: calcChain,
             sharedStrings: sharedStrings,
             stylesheet: stylesheet,
             worksheetDrawing: worksheetDrawing,
-            worksheets: [{
-                    comments: comments,
-                    worksheet: worksheet,
-                }],
+            workbook: workbook,
+            workbookRels: workbookRels,
+            worksheets: worksheets,
         };
     }
-    ExcelTemplateLoad.loadXlsxFile = loadXlsxFile;
+    XlsxReaderWriter.loadXlsxFile = loadXlsxFile;
     function saveXlsxFile(data, writeFileData) {
-        // these 'files' are shared all worksheets in a workbook
+        // these 'files' are shared by all worksheets in a workbook
+        if (data.rels != null) {
+            saveXmlFile(null, writeFileData, data.rels, XlsxReaderWriter.XlsxFiles.Rels);
+        }
+        if (data.contentTypes != null) {
+            saveXmlFile(null, writeFileData, data.rels, XlsxReaderWriter.XlsxFiles.Rels);
+        }
         if (data.calcChain != null) {
-            saveXmlFile(null, writeFileData, data.calcChain, ExcelTemplateLoad.XlsxFiles.CalcChain);
+            saveXmlFile(null, writeFileData, data.calcChain, XlsxReaderWriter.XlsxFiles.CalcChain);
         }
         if (data.sharedStrings != null) {
-            saveXmlFile(null, writeFileData, data.sharedStrings, ExcelTemplateLoad.XlsxFiles.SharedStrings);
+            saveXmlFile(null, writeFileData, data.sharedStrings, XlsxReaderWriter.XlsxFiles.SharedStrings);
+        }
+        if (data.workbook != null) {
+            saveXmlFile(null, writeFileData, data.workbook, XlsxReaderWriter.XlsxFiles.Workbook);
+        }
+        if (data.workbookRels != null) {
+            saveXmlFile(null, writeFileData, data.rels, XlsxReaderWriter.XlsxFiles.Rels);
         }
         if (data.worksheetDrawing != null) {
-            saveXmlFile(1, writeFileData, data.worksheetDrawing, ExcelTemplateLoad.XlsxFiles.WorksheetDrawing);
+            saveXmlFile(1, writeFileData, data.worksheetDrawing, XlsxReaderWriter.XlsxFiles.WorksheetDrawing);
         }
-        saveXmlFile(null, writeFileData, data.stylesheet, ExcelTemplateLoad.XlsxFiles.Styles);
+        saveXmlFile(null, writeFileData, data.stylesheet, XlsxReaderWriter.XlsxFiles.Styles);
+        // worksheet specific files
         for (var i = 0, size = data.worksheets.length; i < size; i++) {
             // TODO load number of sheets from '[Content_Types].xml' or 'xl/workbook.xml', also fix this to work with media, images, itemProps
             var sheetNum = i + 1;
             var worksheet = data.worksheets[i];
-            if (worksheet.comments != null) {
-                saveXmlFile(sheetNum, writeFileData, worksheet.comments, ExcelTemplateLoad.XlsxFiles.Comments);
+            if (worksheet.sheetRels != null) {
+                saveXmlFile(sheetNum, writeFileData, worksheet.sheetRels, XlsxReaderWriter.XlsxFiles.Rels);
             }
-            saveXmlFile(sheetNum, writeFileData, worksheet.worksheet, ExcelTemplateLoad.XlsxFiles.Worksheet);
+            if (worksheet.comments != null) {
+                saveXmlFile(sheetNum, writeFileData, worksheet.comments, XlsxReaderWriter.XlsxFiles.Comments);
+            }
+            saveXmlFile(sheetNum, writeFileData, worksheet.worksheet, XlsxReaderWriter.XlsxFiles.Worksheet);
         }
     }
-    ExcelTemplateLoad.saveXlsxFile = saveXlsxFile;
+    XlsxReaderWriter.saveXlsxFile = saveXlsxFile;
+    // TODO finish implementing
+    function defaultFileCreator(path) {
+        var workbookId = "rId1";
+        var sheetId = "rId50";
+        var rels = {
+            relationships: [
+                { id: workbookId, target: "xl/workbook.xml", type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" }
+            ]
+        };
+        var contentTypes = {
+            defaults: [
+                { contentType: "application/vnd.openxmlformats-package.relationships+xml", extension: "rels" },
+                { contentType: "application/xml", extension: "xml" }
+            ],
+            overrides: [
+                { contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml", partName: "/xl/workbook.xml" },
+                { contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml", partName: "/xl/sharedStrings.xml" },
+                { contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml", partName: "/xl/styles.xml" },
+                { contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml", partName: "/xl/worksheets/sheet1.xml" }
+            ]
+        };
+        var sharedStrings = { count: 0, uniqueCount: 0, sis: [] };
+        var stylesheet = createDefaultStylesheet();
+        var workbook = {
+            sheets: {
+                sheets: [{ id: sheetId, sheetId: 1, name: "Sheet 1" }]
+            }
+        };
+        var workbookRels = {
+            relationships: [
+                { id: "rId45", target: "sharedStrings.xml", type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" },
+                { id: "rId46", target: "styles.xml", type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" },
+                { id: sheetId, target: "worksheets/sheet1.xml", type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" }
+            ]
+        };
+        var worksheets = [{
+                comments: null,
+                sheetRels: { relationships: [] },
+                worksheet: {
+                    cols: [{ cols: [{ max: 1, min: 1, width: 9.140625 }] }],
+                    dimension: { ref: "A1:A1" },
+                    sheetData: { rows: [] }
+                }
+            }];
+        return {
+            rels: rels,
+            contentTypes: contentTypes,
+            calcChain: null,
+            sharedStrings: sharedStrings,
+            stylesheet: stylesheet,
+            worksheetDrawing: null,
+            workbook: workbook,
+            workbookRels: workbookRels,
+            worksheets: worksheets
+        };
+    }
     function loadXmlFile(sheetNum, readFileData, loader) {
-        var info = loader.fileInfo;
-        // TODO the path template token may not be a sheet number, could be a resource identifier (i.e. an image or item prop number)
-        var path = info.pathIsTemplate ? info.xlsxFilePath.split(info.pathTemplateToken).join(sheetNum) : info.xlsxFilePath;
+        var path = XlsxFileType.getXmlFilePath(sheetNum, loader.fileInfo);
         var data = readFileData(path);
         var inst = data != null ? loader.read(data) : null;
         return inst;
     }
     function saveXmlFile(sheetNum, writeFileData, data, writer) {
-        var info = writer.fileInfo;
-        // TODO the path template token may not be a sheet number, could be a resource identifier (i.e. an image or item prop number)
-        var path = info.pathIsTemplate ? info.xlsxFilePath.split(info.pathTemplateToken).join(sheetNum) : info.xlsxFilePath;
+        var path = XlsxFileType.getXmlFilePath(sheetNum, writer.fileInfo);
         var dataStr = writer.write(data);
         writeFileData(path, dataStr);
     }
-})(ExcelTemplateLoad || (ExcelTemplateLoad = {}));
-module.exports = ExcelTemplateLoad;
+    function createDefaultStylesheet() {
+        return {
+            borders: {
+                count: 1,
+                borders: [{ left: {}, right: {}, top: {}, bottom: {}, diagonal: {} }]
+            },
+            cellStyleXfs: {
+                count: 1,
+                xfs: [{ borderId: 0, fillId: 0, fontId: 0, numFmtId: 0 }]
+            },
+            cellXfs: {
+                count: 1,
+                xfs: [{ borderId: 0, fillId: 0, fontId: 0, numFmtId: 0 }]
+            },
+            cellStyles: {
+                count: 1,
+                cellStyles: [{ builtinId: 0, xfId: 0, name: "Normal" }]
+            },
+            dxfs: {
+                count: 1,
+                dxfs: [{}]
+            },
+            fills: {
+                count: 2,
+                fills: [{}, { patternFill: { patternType: "gray125", bgColor: { rgb: "FF333333" }, fgColor: { rgb: "FF333333" } } }]
+            },
+            fonts: {
+                count: 1,
+                fonts: [{}]
+            },
+            numFmts: {
+                count: 0,
+                numFmts: []
+            }
+        };
+    }
+})(XlsxReaderWriter || (XlsxReaderWriter = {}));
+module.exports = XlsxReaderWriter;

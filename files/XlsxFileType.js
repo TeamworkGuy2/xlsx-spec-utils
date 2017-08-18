@@ -21,6 +21,10 @@ var XlsxFileTypeImpl = (function () {
         this.pathIsTemplate = pathIsTemplate;
         this.pathTemplateToken = pathTemplateToken;
     }
+    XlsxFileTypeImpl.getXmlFilePath = function (sheetNum, info) {
+        // TODO the path template token may not be a sheet number, could be a resource identifier (i.e. an image or item prop number)
+        return (info.pathIsTemplate ? info.xlsxFilePath.split(info.pathTemplateToken).join(sheetNum) : info.xlsxFilePath);
+    };
     return XlsxFileTypeImpl;
 }());
 module.exports = XlsxFileTypeImpl;
