@@ -143,7 +143,7 @@ var XlsxReaderWriter;
             saveXmlFile(null, writeFileData, data.rels, XlsxReaderWriter.XlsxFiles.Rels);
         }
         if (data.contentTypes != null) {
-            saveXmlFile(null, writeFileData, data.rels, XlsxReaderWriter.XlsxFiles.Rels);
+            saveXmlFile(null, writeFileData, data.contentTypes, XlsxReaderWriter.XlsxFiles.ContentTypes);
         }
         if (data.calcChain != null) {
             saveXmlFile(null, writeFileData, data.calcChain, XlsxReaderWriter.XlsxFiles.CalcChain);
@@ -155,7 +155,7 @@ var XlsxReaderWriter;
             saveXmlFile(null, writeFileData, data.workbook, XlsxReaderWriter.XlsxFiles.Workbook);
         }
         if (data.workbookRels != null) {
-            saveXmlFile(null, writeFileData, data.rels, XlsxReaderWriter.XlsxFiles.Rels);
+            saveXmlFile(null, writeFileData, data.workbookRels, XlsxReaderWriter.XlsxFiles.WorkbookRels);
         }
         if (data.worksheetDrawing != null) {
             saveXmlFile(1, writeFileData, data.worksheetDrawing, XlsxReaderWriter.XlsxFiles.WorksheetDrawing);
@@ -167,7 +167,7 @@ var XlsxReaderWriter;
             var sheetNum = i + 1;
             var worksheet = data.worksheets[i];
             if (worksheet.sheetRels != null) {
-                saveXmlFile(sheetNum, writeFileData, worksheet.sheetRels, XlsxReaderWriter.XlsxFiles.Rels);
+                saveXmlFile(sheetNum, writeFileData, worksheet.sheetRels, XlsxReaderWriter.XlsxFiles.WorksheetRels);
             }
             if (worksheet.comments != null) {
                 saveXmlFile(sheetNum, writeFileData, worksheet.comments, XlsxReaderWriter.XlsxFiles.Comments);

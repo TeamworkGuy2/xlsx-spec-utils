@@ -224,11 +224,11 @@ module XlsxReaderWriter {
     export function saveXlsxFile(data: ParsedXlsxFileInst, writeFileData: (path: string, data: string) => void) {
         // these 'files' are shared by all worksheets in a workbook
         if (data.rels != null) { saveXmlFile(null, writeFileData, data.rels, XlsxFiles.Rels); }
-        if (data.contentTypes != null) { saveXmlFile(null, writeFileData, data.rels, XlsxFiles.Rels); }
+        if (data.contentTypes != null) { saveXmlFile(null, writeFileData, data.contentTypes, XlsxFiles.ContentTypes); }
         if (data.calcChain != null) { saveXmlFile(null, writeFileData, data.calcChain, XlsxFiles.CalcChain); }
         if (data.sharedStrings != null) { saveXmlFile(null, writeFileData, data.sharedStrings, XlsxFiles.SharedStrings); }
         if (data.workbook != null) { saveXmlFile(null, writeFileData, data.workbook, XlsxFiles.Workbook); }
-        if (data.workbookRels != null) { saveXmlFile(null, writeFileData, data.rels, XlsxFiles.Rels); }
+        if (data.workbookRels != null) { saveXmlFile(null, writeFileData, data.workbookRels, XlsxFiles.WorkbookRels); }
         if (data.worksheetDrawing != null) { saveXmlFile(1, writeFileData, data.worksheetDrawing, XlsxFiles.WorksheetDrawing); }
         saveXmlFile(null, writeFileData, data.stylesheet, XlsxFiles.Styles);
 
@@ -238,7 +238,7 @@ module XlsxReaderWriter {
             var sheetNum = i + 1;
             var worksheet = data.worksheets[i];
 
-            if (worksheet.sheetRels != null) { saveXmlFile(sheetNum, writeFileData, worksheet.sheetRels, XlsxFiles.Rels); }
+            if (worksheet.sheetRels != null) { saveXmlFile(sheetNum, writeFileData, worksheet.sheetRels, XlsxFiles.WorksheetRels); }
             if (worksheet.comments != null) { saveXmlFile(sheetNum, writeFileData, worksheet.comments, XlsxFiles.Comments); }
             saveXmlFile(sheetNum, writeFileData, worksheet.worksheet, XlsxFiles.Worksheet);
         }

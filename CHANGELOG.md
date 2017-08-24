@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.2](N/A) - 2017-08-24
+### [0.3.3](N/A) - 2017-08-24
+#### Changed
+* Fix `XlsxReaderWriter.saveXlsxFile()` writing data to the wrong files
+
+
+--------
+### [0.3.2](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/1f4446da1dba26be30894b8d53360fc88c041caa) - 2017-08-24
 #### Changed
 * Aditional changes to `XmlFileInst.newInst()` and `DocLikeFile` and `XmlDocFile` to make them proper classes
 

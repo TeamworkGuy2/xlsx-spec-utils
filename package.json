@@ -1,6 +1,6 @@
 {
   "name": "xlsx-spec-utils",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "TypeScript Open XML XLSX read/write utils",
   "dependencies": {
     "dom-builder": "~0.4.1",
