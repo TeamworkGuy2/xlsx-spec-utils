@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.1](N/A) - 2017-08-24
+### [0.3.2](N/A) - 2017-08-24
+#### Changed
+* Aditional changes to `XmlFileInst.newInst()` and `DocLikeFile` and `XmlDocFile` to make them proper classes
+
+
+--------
+### [0.3.1](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/afecaa263adf49bd2260e1702da1677099093b95) - 2017-08-24
 #### Changed
 * tsconfig.json `"noImplicitThis": true` and related code type changes
 

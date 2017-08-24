@@ -25,7 +25,13 @@ var XmlFileInst;
     var DocLikeFile = (function (_super) {
         __extends(DocLikeFile, _super);
         function DocLikeFile(dom) {
-            return _super.call(this, dom, XlsxDomErrorsImpl) || this;
+            var _this = _super.call(this, dom, XlsxDomErrorsImpl) || this;
+            _this.dom = dom;
+            _this.domBldr = new DomBuilderFactory(dom);
+            _this.validator = XlsxDomErrorsImpl;
+            _this.readMulti = function (reader, elems, expectedElemName) { return XmlFileInst.readMulti(_this, reader, elems, expectedElemName); };
+            _this.writeMulti = function (writer, insts, keysOrExpectedElemName) { return XmlFileInst.writeMulti(_this, writer, insts, keysOrExpectedElemName); };
+            return _this;
         }
         return DocLikeFile;
     }(DomBuilderHelper));
@@ -33,22 +39,19 @@ var XmlFileInst;
     var XmlDocFile = (function (_super) {
         __extends(XmlDocFile, _super);
         function XmlDocFile(dom) {
-            return _super.call(this, dom, XlsxDomErrorsImpl) || this;
+            var _this = _super.call(this, dom, XlsxDomErrorsImpl) || this;
+            _this.dom = dom;
+            _this.domBldr = new DomBuilderFactory(dom);
+            _this.validator = XlsxDomErrorsImpl;
+            _this.readMulti = function (reader, elems, expectedElemName) { return XmlFileInst.readMulti(_this, reader, elems, expectedElemName); };
+            _this.writeMulti = function (writer, insts, keysOrExpectedElemName) { return XmlFileInst.writeMulti(_this, writer, insts, keysOrExpectedElemName); };
+            return _this;
         }
         return XmlDocFile;
     }(DomBuilderHelper));
     XmlFileInst.XmlDocFile = XmlDocFile;
     function newInst(dom) {
         var inst = (dom.childNodes != null ? new XmlDocFile(dom) : new DocLikeFile(dom));
-        inst.dom = dom;
-        inst.domBldr = new DomBuilderFactory(dom);
-        inst.readMulti = function readMulti(reader, elems, expectedElemName) {
-            return XmlFileInst.readMulti(this, reader, elems, expectedElemName);
-        };
-        inst.writeMulti = function writeMulti(writer, insts, keysOrExpectedElemName) {
-            return XmlFileInst.writeMulti(this, writer, insts, keysOrExpectedElemName);
-        };
-        inst.validator = XlsxDomErrorsImpl;
         return inst;
     }
     XmlFileInst.newInst = newInst;
