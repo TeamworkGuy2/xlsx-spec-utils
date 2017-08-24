@@ -4,9 +4,18 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.0](N/A) - 2017-08-18
+### [0.3.1](N/A) - 2017-08-24
+#### Changed
+* tsconfig.json `"noImplicitThis": true` and related code type changes
+
+#### Fixed
+* Serious bug in `XmlFileInst.newInst()` not setting up the returned instances correctly.
+
+
+--------
+### [0.3.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/ef364947128f20a38ba68c8ee1f2c284c4d0f4df) - 2017-08-18
 #### Added
-* `Workbook` file types and reader/writer added to XlsxReaderWriter
+* `Workbook` file types and reader/writer added to `XlsxReaderWriter`
 * Added `XlsxFileType.getXmlFilePath()`
 * Added `utils/RelationshipsUtil`
 
@@ -27,25 +36,25 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 * Updated to TypeScript 2.3, add tsconfig.json, use @types/ definitions
 
 #### Fixed
-* CellRefUtil.mergeCellSpans() typo bug
+* `CellRefUtil.mergeCellSpans()` typo bug
 
 
 --------
 ### [0.2.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/db984736c9c9e6d314404c10834c620d64ca7c21) - 2017-01-28
 #### Added
 * OpenXmlIo ReadWrite and ReadWriteNamed interfaces
-* Added XlsxDomErrorsImpl.expectNode() to match new `dom-builder@0.2.0` definition
-* XlsxReaderWriter support for WorksheetDrawing part (i.e. 'xl/drawings/drawing#.xml')
-* XlsxReaderWriter.loadXlsxFile() new `loadSettings` parameter to allow caller to skip parsing various parts of the spreadsheet
+* Added `XlsxDomErrorsImpl.expectNode()` to match new `dom-builder@0.2.0` definition
+* `XlsxReaderWriter` support for `WorksheetDrawing` part (i.e. 'xl/drawings/drawing#.xml')
+* `XlsxReaderWriter.loadXlsxFile()` new `loadSettings` parameter to allow caller to skip parsing various parts of the spreadsheet
 
 #### Changed
 * Major refactoring to simplify and denest interfaces, split open-xml reading/writing into seperate interfaces
-  * OpenXmlIo.ParsedFile refactored into OpenXmlIo.ReaderContext and OpenXmlIo.WriterContext both of which now extend DomBuilderHelper
-  * XmlFileInst now contains readMulti() and writeMulti() instead of nested 'readOpenXml' and 'writeOpenXml' properties
-  * XmlFileInst now directly extends DomBuilderHelper instead of having 'domHelper' property
-  * Renamed ReadOpenXmlElement -> ElementsReader and is a function interface rather than containing 'readMulti' method definition
-  * WriteOpenXmlElement -> ElementsWriter and is a function interface rather than containing 'writeMulti' method definition
-  * Renamed XlsxReaderWriter loadExcelFileInst() -> loadXlsxFile() and saveExcelFileInst() -> saveXlsxFile()
+  * `OpenXmlIo.ParsedFile` refactored into `OpenXmlIo.ReaderContext` and `OpenXmlIo.WriterContext` both of which now `extend DomBuilderHelper`
+  * `XmlFileInst` now contains `readMulti()` and `writeMulti()` instead of nested `readOpenXml` and `writeOpenXml` properties
+  * `XmlFileInst` now `extends DomBuilderHelper` instead of containing a 'domHelper' property
+  * Renamed `ReadOpenXmlElement` -> `ElementsReader` and is a function interface rather than containing `readMulti` method definition
+  * Renamed `WriteOpenXmlElement` -> `ElementsWriter` and is a function interface rather than containing `writeMulti` method definition
+  * Renamed `XlsxReaderWriter` `loadExcelFileInst()` -> `loadXlsxFile()` and `saveExcelFileInst()` -> `saveXlsxFile()`
 
 #### Removed
 * Removed Read, ReadNamed, Write, WriteNamed interfaces, see new ReadWrite and ReadWriteNamed interfaces

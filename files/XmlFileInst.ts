@@ -48,17 +48,21 @@ module XmlFileInst {
     }
 
 
-    export function newInst<D extends DocumentLike>(dom: XMLDocument): XmlDocFile;
+    export function newInst(dom: XMLDocument): XmlDocFile;
     export function newInst<D extends DocumentLike>(dom: D): DocLikeFile;
     export function newInst<D extends DocumentLike>(dom: D) {
         var inst = ((<any>dom).childNodes != null ? new XmlDocFile(<XMLDocument><any>dom) : new DocLikeFile(dom));
-        this.dom = dom;
-        this.domBldr = new DomBuilderFactory<D>(dom);
+        inst.dom = dom;
+        inst.domBldr = new DomBuilderFactory<D>(dom);
 
-        this.readMulti = (reader, elems, expectedElemName?) => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
-        this.writeMulti = (writer, insts, keysOrExpectedElemName?) => XmlFileInst.writeMulti(this, writer, insts, keysOrExpectedElemName);
+        inst.readMulti = function readMulti<T>(this: OpenXmlIo.ReaderContext, reader: (xmlDoc: OpenXmlIo.ReaderContext, elem: HTMLElement, expectedElemName?: string) => T, elems: HTMLElement[], expectedElemName?: string) {
+            return XmlFileInst.readMulti(this, reader, elems, expectedElemName);
+        };
+        inst.writeMulti = function writeMulti<T, E extends ElementLike>(this: OpenXmlIo.WriterContext, writer: (xmlDoc: OpenXmlIo.WriterContext, data: T, expectedElemName?: string) => E, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]) {
+            return XmlFileInst.writeMulti(this, writer, <any>insts, <any>keysOrExpectedElemName);
+        };
 
-        this.validator = XlsxDomErrorsImpl;
+        inst.validator = XlsxDomErrorsImpl;
         return inst;
     }
 
@@ -83,14 +87,14 @@ module XmlFileInst {
         if (Array.isArray(keysOrExpectedElemName)) {
             var keys = keysOrExpectedElemName;
             for (var i = 0, size = keys.length || (<T[]>insts).length; i < size; i++) {
-                var inst = <T>insts[keys[i]];
+                var inst = <T>(<any>insts)[keys[i]];
                 res.push((<OpenXmlIo.WriteFunc<T>>writer)(xmlDoc, inst));
             }
         }
         else {
             var expectedElemName = keysOrExpectedElemName;
             for (var i = 0, size = (<T[]>insts).length; i < size; i++) {
-                var inst = <T>insts[i];
+                var inst = <T>(<any>insts)[i];
                 res.push((<OpenXmlIo.WriteFunc<T>>writer)(xmlDoc, inst, expectedElemName));
             }
         }

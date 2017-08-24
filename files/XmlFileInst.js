@@ -39,13 +39,16 @@ var XmlFileInst;
     }(DomBuilderHelper));
     XmlFileInst.XmlDocFile = XmlDocFile;
     function newInst(dom) {
-        var _this = this;
         var inst = (dom.childNodes != null ? new XmlDocFile(dom) : new DocLikeFile(dom));
-        this.dom = dom;
-        this.domBldr = new DomBuilderFactory(dom);
-        this.readMulti = function (reader, elems, expectedElemName) { return XmlFileInst.readMulti(_this, reader, elems, expectedElemName); };
-        this.writeMulti = function (writer, insts, keysOrExpectedElemName) { return XmlFileInst.writeMulti(_this, writer, insts, keysOrExpectedElemName); };
-        this.validator = XlsxDomErrorsImpl;
+        inst.dom = dom;
+        inst.domBldr = new DomBuilderFactory(dom);
+        inst.readMulti = function readMulti(reader, elems, expectedElemName) {
+            return XmlFileInst.readMulti(this, reader, elems, expectedElemName);
+        };
+        inst.writeMulti = function writeMulti(writer, insts, keysOrExpectedElemName) {
+            return XmlFileInst.writeMulti(this, writer, insts, keysOrExpectedElemName);
+        };
+        inst.validator = XlsxDomErrorsImpl;
         return inst;
     }
     XmlFileInst.newInst = newInst;
