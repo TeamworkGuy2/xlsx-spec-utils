@@ -1,12 +1,15 @@
 {
   "name": "xlsx-spec-utils",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "TypeScript Open XML XLSX read/write utils",
   "dependencies": {
     "dom-builder": "~0.4.1",
-    "xlsx-spec-models": "~0.3.0"
+    "xlsx-spec-models": "~0.4.0"
   },
   "devDependencies": {
+    "@types/chai": "~4.0.0",
+    "@types/mocha": "~2.2.0",
+    "@types/node": "~8.0.0",
     "chai": "~4.1.0",
     "mocha": "~3.5.0",
     "typescript": "~2.4.0"

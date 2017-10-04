@@ -1,5 +1,5 @@
 "use strict";
-var SharedStringItem = require("../../xlsx-spec-models/types/SharedStringItem");
+var SharedStringTable = require("../../xlsx-spec-models/root-types/SharedStringTable");
 /** Functions for working with 'OpenXml.SharedStringTable'.  Find, add, and overwrite workbook shared strings.
  * @since 2016-3-31
  */
@@ -42,7 +42,7 @@ var SharedStringsUtil;
     SharedStringsUtil.findOrCreateSharedString = findOrCreateSharedString;
     function addSharedString(sharedStrings, sharedStrItem, copy) {
         if (copy === void 0) { copy = true; }
-        sharedStrItem = copy ? SharedStringItem.copy(sharedStrItem) : sharedStrItem;
+        sharedStrItem = copy ? SharedStringTable.SharedStringItem.copy(sharedStrItem) : sharedStrItem;
         sharedStrings.sis.push(sharedStrItem);
         return sharedStrings.sis.length - 1;
     }

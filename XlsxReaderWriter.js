@@ -4,15 +4,15 @@
 var XmlFileReadWriter = require("./files/XmlFileReadWriter");
 var XlsxFileType = require("./files/XlsxFileType");
 var WorksheetUtil = require("./utils/WorksheetUtil");
-var CalculationChain = require("../xlsx-spec-models/types/CalculationChain");
-var Comments = require("../xlsx-spec-models/types/Comments");
-var ContentTypes = require("../xlsx-spec-models/types/ContentTypes");
-var Relationships = require("../xlsx-spec-models/types/Relationships");
-var SharedStringTable = require("../xlsx-spec-models/types/SharedStringTable");
-var Stylesheet = require("../xlsx-spec-models/types/Stylesheet");
-var Workbook = require("../xlsx-spec-models/types/Workbook");
-var Worksheet = require("../xlsx-spec-models/types/Worksheet");
-var WorksheetDrawing = require("../xlsx-spec-models/types/WorksheetDrawing");
+var CalcChain = require("../xlsx-spec-models/root-types/CalcChain");
+var Comments = require("../xlsx-spec-models/root-types/Comments");
+var ContentTypes = require("../xlsx-spec-models/root-types/ContentTypes");
+var Relationships = require("../xlsx-spec-models/root-types/Relationships");
+var SharedStringTable = require("../xlsx-spec-models/root-types/SharedStringTable");
+var Stylesheet = require("../xlsx-spec-models/root-types/Stylesheet");
+var Workbook = require("../xlsx-spec-models/root-types/Workbook");
+var Worksheet = require("../xlsx-spec-models/root-types/Worksheet");
+var WorksheetDrawing = require("../xlsx-spec-models/root-types/WorksheetDrawing");
 /**
  * @author TeamworkGuy2
  * @since 2016-5-27
@@ -40,17 +40,17 @@ var XlsxReaderWriter;
         WorksheetRels: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "xl/worksheets/_rels/sheet#.xml.rels", "xl/worksheets/_rels/sheet#.xml.rels", true, "#"),
     };
     XlsxReaderWriter.XlsxFiles = {
-        CalcChain: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.CalcChain, CalculationChain, prepCalcChainForWrite),
-        Comments: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Comments, Comments, prepCommentsForWrite),
-        ContentTypes: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.ContentTypes, ContentTypes, prepContentTypesForWrite),
-        Rels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Rels, Relationships, prepRelsForWrite),
-        SharedStrings: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.SharedStrings, SharedStringTable, prepSharedStringsForWrite),
-        Styles: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Styles, Stylesheet, prepStylesForWrite),
-        Workbook: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Workbook, Workbook, prepWorkbookForWrite),
-        WorkbookRels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.WorkbookRels, Relationships, prepRelsForWrite),
-        Worksheet: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Worksheet, Worksheet, prepWorksheetForWrite),
-        WorksheetRels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.WorksheetRels, Relationships, prepRelsForWrite),
-        WorksheetDrawing: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Drawing, WorksheetDrawing, prepDrawingsForWrite),
+        CalcChain: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.CalcChain, CalcChain.CalcChain, prepCalcChainForWrite),
+        Comments: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Comments, Comments.Comments, prepCommentsForWrite),
+        ContentTypes: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.ContentTypes, ContentTypes.ContentTypes, prepContentTypesForWrite),
+        Rels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Rels, Relationships.Relationships, prepRelsForWrite),
+        SharedStrings: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.SharedStrings, SharedStringTable.SharedStringTable, prepSharedStringsForWrite),
+        Styles: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Styles, Stylesheet.Stylesheet, prepStylesForWrite),
+        Workbook: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Workbook, Workbook.Workbook, prepWorkbookForWrite),
+        WorkbookRels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.WorkbookRels, Relationships.Relationships, prepRelsForWrite),
+        Worksheet: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Worksheet, Worksheet.Worksheet, prepWorksheetForWrite),
+        WorksheetRels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.WorksheetRels, Relationships.Relationships, prepRelsForWrite),
+        WorksheetDrawing: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Drawing, WorksheetDrawing.WorksheetDrawing, prepDrawingsForWrite),
     };
     function readZip(data, jszip) {
         var firstByte = data[0];

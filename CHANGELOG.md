@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.3](N/A) - 2017-08-24
+### [0.3.4](N/A) - 2017-10-03
+#### Changed
+* Update dependency `xlsx-spec-models@0.4.0`
+
+
+--------
+### [0.3.3](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/6abe89b18ec226a52ee02ec983b60db4c52e5cfd) - 2017-08-24
 #### Changed
 * Fix `XlsxReaderWriter.saveXlsxFile()` writing data to the wrong files
 
