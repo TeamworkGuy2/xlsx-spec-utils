@@ -5,7 +5,7 @@ var XmlFileInst = require("./XmlFileInst");
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
-var XmlFileReadWriter = (function () {
+var XmlFileReadWriter = /** @class */ (function () {
     /** Create an XML file reader/writer
      * @param fileInfo information about the OpenXML XLSX file type that this reader/writer handles
      * @param rootReadWriter the reader/writer that performs the serialization and parsing of DOM elements

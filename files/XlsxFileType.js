@@ -4,7 +4,7 @@
  * @since 2016-5-27
  * @see OpenXmlIo.XlsxFileType
  */
-var XlsxFileTypeImpl = (function () {
+var XlsxFileTypeImpl = /** @class */ (function () {
     /**
      * @param schemaUrl: the URL of this file's XML DTD schema
      * @param contentType: the content/mime type name of this file

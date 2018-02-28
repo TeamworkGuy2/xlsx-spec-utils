@@ -28,8 +28,8 @@ module XmlFileInst {
             this.dom = dom;
             this.domBldr = new DomBuilderFactory(dom);
             this.validator = XlsxDomErrorsImpl;
-            this.readMulti = (reader, elems, expectedElemName?) => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
-            this.writeMulti = (writer, insts, keysOrExpectedElemName?) => XmlFileInst.writeMulti(this, writer, insts, keysOrExpectedElemName);
+            this.readMulti = <T>(reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName?: string): T[] => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
+            this.writeMulti = <T>(writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): ElementLike[] => XmlFileInst.writeMulti(this, writer, <{ [id: string]: T }>insts, <string[]>keysOrExpectedElemName);
         }
 
     }
@@ -51,8 +51,8 @@ module XmlFileInst {
             this.dom = dom;
             this.domBldr = new DomBuilderFactory(dom);
             this.validator = XlsxDomErrorsImpl;
-            this.readMulti = (reader, elems, expectedElemName?) => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
-            this.writeMulti = (writer, insts, keysOrExpectedElemName?) => XmlFileInst.writeMulti(this, writer, insts, keysOrExpectedElemName);
+            this.readMulti = <T>(reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName?: string): T[] => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
+            this.writeMulti = <T>(writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): ElementLike[] => XmlFileInst.writeMulti(this, writer, <{ [id: string]: T }>insts, <string[]>keysOrExpectedElemName);
         }
 
     }

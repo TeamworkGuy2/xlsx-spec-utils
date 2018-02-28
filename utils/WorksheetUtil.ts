@@ -228,7 +228,7 @@ module WorksheetUtil {
     }
 
 
-    function createCellSimpleFormula(cell: SimpleCellData) {
+    function createCellSimpleFormula(cell: SimpleCellData): OpenXml.CellFormula {
         if (cell.isFormula) {
             return {
                 content: cell.formulaString != null ? cell.formulaString : <string>cell.val,

@@ -4,7 +4,15 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.4](N/A) - 2017-10-03
+### [0.3.5](N/A) - 2018-02-28
+#### Changed
+* Update to TypeScript 2.7
+* Update dependencies: mocha, @types/chai, @types/mocha, @types/node
+* enable tsconfig.json `noImplicitAny`
+
+
+--------
+### [0.3.4](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/e2f45a4a0aa55606a48283d35370ccaaf479e3af) - 2017-10-03
 #### Changed
 * Update dependency `xlsx-spec-models@0.4.0`
 

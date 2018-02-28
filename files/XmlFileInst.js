@@ -22,7 +22,7 @@ var XlsxDomErrorsImpl = require("../errors/XlsxDomErrorsImpl");
  */
 var XmlFileInst;
 (function (XmlFileInst) {
-    var DocLikeFile = (function (_super) {
+    var DocLikeFile = /** @class */ (function (_super) {
         __extends(DocLikeFile, _super);
         function DocLikeFile(dom) {
             var _this = _super.call(this, dom, XlsxDomErrorsImpl) || this;
@@ -36,7 +36,7 @@ var XmlFileInst;
         return DocLikeFile;
     }(DomBuilderHelper));
     XmlFileInst.DocLikeFile = DocLikeFile;
-    var XmlDocFile = (function (_super) {
+    var XmlDocFile = /** @class */ (function (_super) {
         __extends(XmlDocFile, _super);
         function XmlDocFile(dom) {
             var _this = _super.call(this, dom, XlsxDomErrorsImpl) || this;
