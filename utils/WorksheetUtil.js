@@ -46,7 +46,7 @@ var WorksheetUtil;
      */
     function setRow(worksheet, rowNum, columnOffset, dyDescent, cellVals) {
         if (cellVals.length < 1) {
-            return;
+            return null;
         }
         var cells = [];
         // create an OpenXml.Cell for each column in the row
@@ -298,6 +298,7 @@ var WorksheetUtil;
             }
             rows[idx] = newRow;
         }
+        // else, an overwrite point was found
         else if (allowOverwrite) {
             rows[idx] = newRow;
         }
@@ -358,6 +359,7 @@ var WorksheetUtil;
             cells[idx] = newCell;
             return newCell;
         }
+        // else, an overwrite point was found
         else {
             if (overwriteSharedStrings) {
                 if (sharedStrings == null) {

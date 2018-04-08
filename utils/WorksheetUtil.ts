@@ -64,8 +64,8 @@ module WorksheetUtil {
      * @param dyDescent
      * @param columnVals the cell data to place in the row
      */
-    export function setRow(worksheet: OpenXml.Worksheet, rowNum: number, columnOffset: number, dyDescent: number, cellVals: SimpleCellData[]): OpenXml.Row {
-        if (cellVals.length < 1) { return; }
+    export function setRow(worksheet: OpenXml.Worksheet, rowNum: number, columnOffset: number, dyDescent: number, cellVals: SimpleCellData[]): OpenXml.Row | null {
+        if (cellVals.length < 1) { return null; }
 
         var cells: OpenXml.Cell[] = [];
         // create an OpenXml.Cell for each column in the row

@@ -4,7 +4,16 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.5](N/A) - 2018-02-28
+### [0.3.6](N/A) - 2018-04-08
+#### Changed
+* Update to TypeScript 2.8
+* Update tsconfig.json with `noImplicitReturns: true` and `forceConsistentCasingInFileNames: true`, fix resulting issues
+* Update package.json `dom-builder` and `xlsx-spec-models` to correct source url and fix require() paths
+* Added tarball and package.json npm script `build-package` reference for creating tarball
+
+
+--------
+### [0.3.5](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/22cc05f1a48b963753f80d92d91b48f3745c9cab) - 2018-02-28
 #### Changed
 * Update to TypeScript 2.7
 * Update dependencies: mocha, @types/chai, @types/mocha, @types/node

@@ -1,5 +1,5 @@
-﻿import DomBuilderFactory = require("../../dom-builder/dom/DomBuilderFactory");
-import DomBuilderHelper = require("../../dom-builder/dom/DomBuilderHelper");
+﻿import DomBuilderFactory = require("dom-builder/dom/DomBuilderFactory");
+import DomBuilderHelper = require("dom-builder/dom/DomBuilderHelper");
 import XlsxDomErrorsImpl = require("../errors/XlsxDomErrorsImpl");
 
 /** Implementation of OpenXmlIo.ParsedFile, contains:

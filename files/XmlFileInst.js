@@ -9,8 +9,8 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var DomBuilderFactory = require("../../dom-builder/dom/DomBuilderFactory");
-var DomBuilderHelper = require("../../dom-builder/dom/DomBuilderHelper");
+var DomBuilderFactory = require("dom-builder/dom/DomBuilderFactory");
+var DomBuilderHelper = require("dom-builder/dom/DomBuilderHelper");
 var XlsxDomErrorsImpl = require("../errors/XlsxDomErrorsImpl");
 /** Implementation of OpenXmlIo.ParsedFile, contains:
  * - An XMLDocument containing the file data

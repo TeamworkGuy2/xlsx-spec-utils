@@ -1,4 +1,4 @@
-﻿import DomBuilderHelper = require("../../dom-builder/dom/DomBuilderHelper");
+﻿import DomBuilderHelper = require("dom-builder/dom/DomBuilderHelper");
 import XmlFileInst = require("./XmlFileInst");
 
 /** An OpenXmlIo FileReadWriter implementation with a configurable pre-write callback and a cache containing the last read()/loadFromDom() result
