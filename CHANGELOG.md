@@ -4,7 +4,16 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.6](N/A) - 2018-04-08
+### [0.3.7](N/A) - 2018-10-17
+#### Changed
+* Update to TypeScript 3.1
+* Update dev dependencies and @types
+* Enable `tsconfig.json` `strict` and fix compile errors
+* Removed compiled bin tarball in favor of git tags
+
+
+--------
+### [0.3.6](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/8ee37b2b6d298bd06c587dac94ad3137f6b4231e) - 2018-04-08
 #### Changed
 * Update to TypeScript 2.8
 * Update tsconfig.json with `noImplicitReturns: true` and `forceConsistentCasingInFileNames: true`, fix resulting issues
