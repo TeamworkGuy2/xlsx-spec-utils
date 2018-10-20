@@ -1,13 +1,17 @@
 {
   "name": "xlsx-spec-utils",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "TypeScript Open XML XLSX read/write utils",
   "author": "TeamworkGuy2",
   "homepage" : "https://github.com/TeamworkGuy2/xlsx-spec-utils",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TeamworkGuy2/xlsx-spec-utils.git"
+  },
   "dependencies": {
-    "dom-builder": "https://github.com/TeamworkGuy2/dom-builder#v0.6.3",
-    "xlsx-spec-models": "https://github.com/TeamworkGuy2/xlsx-spec-models#v0.4.3"
+    "dom-builder": "https://github.com/TeamworkGuy2/dom-builder/archive/v0.6.3.tar.gz",
+    "xlsx-spec-models": "https://github.com/TeamworkGuy2/xlsx-spec-models/archive/v0.4.4.tar.gz"
   },
   "devDependencies": {
     "@types/chai": "~4.1.6",

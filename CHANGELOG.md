@@ -4,7 +4,14 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.7](N/A) - 2018-10-17
+### [0.3.8](N/A) - 2018-10-20
+#### Changed
+* Switch `package.json` github dependencies from tag urls to release tarballs to simplify npm install (doesn't require git to npm install tarballs)
+* Added `repository` to `package.json`
+
+
+--------
+### [0.3.7](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/4400862ebc360662fe4ac6fe1b71b9a98d5647c0) - 2018-10-17
 #### Changed
 * Update to TypeScript 3.1
 * Update dev dependencies and @types
@@ -44,7 +51,7 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 --------
 ### [0.3.2](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/1f4446da1dba26be30894b8d53360fc88c041caa) - 2017-08-24
 #### Changed
-* Aditional changes to `XmlFileInst.newInst()` and `DocLikeFile` and `XmlDocFile` to make them proper classes
+* Additional changes to `XmlFileInst.newInst()` and `DocLikeFile` and `XmlDocFile` to make them proper classes
 
 
 --------
