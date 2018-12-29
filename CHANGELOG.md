@@ -4,7 +4,14 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.8](N/A) - 2018-10-20
+### [0.3.9](N/A) - 2018-10-20
+#### Changed
+* Update to TypeScript 3.2
+* Update @types/ dependencies
+
+
+--------
+### [0.3.8](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/e6f21a7627b63b6ab20455a95dee5caf07ad1ea8) - 2018-10-20
 #### Changed
 * Switch `package.json` github dependencies from tag urls to release tarballs to simplify npm install (doesn't require git to npm install tarballs)
 * Added `repository` to `package.json`
