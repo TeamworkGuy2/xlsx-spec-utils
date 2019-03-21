@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.10](N/A) - 2019-03-21
+### [0.3.11](N/A) - 2019-03-21
+#### Fixed
+* `dom-builder` import/reference paths not being updated to `@twg2/dom-builder`
+
+
+--------
+### [0.3.10](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/ab5f36d023f8871dafc2b611099fef04c11aa3ad) - 2019-03-21
 #### Changed
 * Switch `dom-builder` dependency from github to npm `@twg2/dom-builder`, update 'xlsx-spec-models@0.4.6` to also use `@twg2/dom-builder`
 

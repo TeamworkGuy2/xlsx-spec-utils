@@ -1,5 +1,5 @@
 "use strict";
-var DomBuilderHelper = require("dom-builder/dom/DomBuilderHelper");
+var DomBuilderHelper = require("@twg2/dom-builder/dom/DomBuilderHelper");
 var XmlFileInst = require("./XmlFileInst");
 /** An OpenXmlIo FileReadWriter implementation with a configurable pre-write callback and a cache containing the last read()/loadFromDom() result
  * @author TeamworkGuy2
