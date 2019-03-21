@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.9](N/A) - 2018-10-20
+### [0.3.10](N/A) - 2019-03-21
+#### Changed
+* Switch `dom-builder` dependency from github to npm `@twg2/dom-builder`, update 'xlsx-spec-models@0.4.6` to also use `@twg2/dom-builder`
+
+
+--------
+### [0.3.9](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/0272d825acff1f21068f0555c79c6c1dbae22fa3) - 2018-12-29
 #### Changed
 * Update to TypeScript 3.2
 * Update @types/ dependencies
