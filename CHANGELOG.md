@@ -4,7 +4,14 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.11](N/A) - 2019-03-21
+### [0.3.12](N/A) - 2019-05-24
+#### Change
+* `dom-builder` dependency update to v0.7.0 (improved attribute handling)
+* `xlsx-spec-models@0.4.8` dependency update (to use `dom-builder@0.7.0`)
+
+
+--------
+### [0.3.11](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/daf62f5886dacfb0101a989e9bb2e49c80fc5d0f) - 2019-03-21
 #### Fixed
 * `dom-builder` import/reference paths not being updated to `@twg2/dom-builder`
 
