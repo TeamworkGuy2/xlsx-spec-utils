@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.3.12](N/A) - 2019-05-24
+### [0.3.13](N/A) - 2019-07-06
+#### Change
+* Update to TypeScript 3.5
+
+
+--------
+### [0.3.12](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/4fe468d5539d8a77671d0dd3a47e41db607287f1) - 2019-05-24
 #### Change
 * `dom-builder` dependency update to v0.7.0 (improved attribute handling)
 * `xlsx-spec-models@0.4.8` dependency update (to use `dom-builder@0.7.0`)
