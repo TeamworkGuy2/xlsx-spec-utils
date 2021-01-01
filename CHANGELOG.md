@@ -4,7 +4,14 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.4.0](N/A) - 2020-09-05
+### [0.5.0](N/A) - 2021-01-01
+* TypeScript - enable `strict` compilation
+  * Fix compile errors related to `strict`
+* Update dependency `dom-builder@0.9.0`
+
+
+--------
+### [0.4.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/ddd503285f10b08f68620b254cd0aeaa98dbabbd) - 2020-09-05
 #### Change
 * Update to TypeScript 4.0
 

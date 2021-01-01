@@ -13,16 +13,20 @@ var StylesheetUtil;
     }
     StylesheetUtil.findCellFormat = findCellFormat;
     function _findCellFormat(stylesheet, font, numFmt, border, alignment) {
-        var cellFormats = stylesheet.cellXfs.xfs;
-        for (var i = 0, size = cellFormats.length; i < size; i++) {
-            var fmt = cellFormats[i];
-            var style = stylesheet.cellStyleXfs.xfs[fmt.xfId];
-            // the complex logic and '... || ...Id == 0' is for handling nulls and default values (zero being a default ID)
-            if (((font == null) || (((fmt.applyFont == font.apply || font.apply == undefined) && fmt.fontId === font.index) || (style.applyFont == font.apply && style.fontId === font.index))) &&
-                ((numFmt == null) || (((fmt.applyNumberFormat == numFmt.apply || numFmt.apply == undefined || numFmt.id == 0) && fmt.numFmtId === numFmt.id) || ((style.applyNumberFormat == numFmt.apply || numFmt.id == 0) && style.numFmtId === numFmt.id))) &&
-                ((border == null) || (((fmt.applyBorder == border.apply || border.apply == undefined || border.index == 0) && fmt.borderId === border.index) || ((style.applyBorder == border.apply || border.index == 0) && style.borderId === border.index))) &&
-                compareCellFormatAlignment(fmt, style, alignment)) {
-                return i;
+        var _a, _b, _c;
+        var cellFormats = (_a = stylesheet.cellXfs) === null || _a === void 0 ? void 0 : _a.xfs;
+        var cellStyleFormats = (_b = stylesheet.cellStyleXfs) === null || _b === void 0 ? void 0 : _b.xfs;
+        if (cellFormats != null && cellStyleFormats != null) {
+            for (var i = 0, size = cellFormats.length; i < size; i++) {
+                var fmt = cellFormats[i];
+                var style = cellStyleFormats[(_c = fmt === null || fmt === void 0 ? void 0 : fmt.xfId) !== null && _c !== void 0 ? _c : -1];
+                // the complex logic and '... || ...Id == 0' is for handling nulls and default values (zero being a default ID)
+                if (((font == null) || (((fmt.applyFont == font.apply || font.apply == undefined) && fmt.fontId === font.index) || (style.applyFont == font.apply && style.fontId === font.index))) &&
+                    ((numFmt == null) || (((fmt.applyNumberFormat == numFmt.apply || numFmt.apply == undefined || numFmt.id == 0) && fmt.numFmtId === numFmt.id) || ((style.applyNumberFormat == numFmt.apply || numFmt.id == 0) && style.numFmtId === numFmt.id))) &&
+                    ((border == null) || (((fmt.applyBorder == border.apply || border.apply == undefined || border.index == 0) && fmt.borderId === border.index) || ((style.applyBorder == border.apply || border.index == 0) && style.borderId === border.index))) &&
+                    compareCellFormatAlignment(fmt, style, alignment)) {
+                    return i;
+                }
             }
         }
         return -1;
@@ -55,8 +59,9 @@ var StylesheetUtil;
             quotePrefix: false,
             xfId: 0,
         };
-        var idx = stylesheet.cellXfs.xfs.push(style) - 1;
-        stylesheet.cellXfs.count = stylesheet.cellXfs.xfs.length;
+        var cellFormats = stylesheet.cellXfs || (stylesheet.cellXfs = { xfs: [], count: 0 });
+        var idx = cellFormats.xfs.push(style) - 1;
+        cellFormats.count = cellFormats.xfs.length;
         return idx;
     }
     /** Try to find a CellFormat matching the given parameters, if one cannot be found, create one, return the index of the cell format found or the index of the newly created cell format
@@ -69,21 +74,24 @@ var StylesheetUtil;
         return idx;
     }
     StylesheetUtil.findOrCreateCellFormat = findOrCreateCellFormat;
-    /** Try to find a border matching the given parameters, return the border's index if found, -1 if no match
+    /** Try to find a border matching the given parameters, return the border's index if found, null if no match
      */
     function findBorder(stylesheet, left, right, top, bottom, diagonal) {
-        var borders = stylesheet.borders.borders;
-        for (var i = 0, size = borders.length; i < size; i++) {
-            var brd = borders[i];
-            if (compareBorder(left, brd.left) &&
-                compareBorder(right, brd.right) &&
-                compareBorder(top, brd.top) &&
-                compareBorder(bottom, brd.bottom) &&
-                compareBorder(diagonal, brd.diagonal)) {
-                return i;
+        var _a;
+        var borders = (_a = stylesheet.borders) === null || _a === void 0 ? void 0 : _a.borders;
+        if (borders != null) {
+            for (var i = 0, size = borders.length; i < size; i++) {
+                var brd = borders[i];
+                if (compareBorder(left, brd.left) &&
+                    compareBorder(right, brd.right) &&
+                    compareBorder(top, brd.top) &&
+                    compareBorder(bottom, brd.bottom) &&
+                    compareBorder(diagonal, brd.diagonal)) {
+                    return i;
+                }
             }
         }
-        return -1;
+        return null;
     }
     StylesheetUtil.findBorder = findBorder;
     /** Create an Open XML Border object, add it to the stylesheet and return the new border's index
@@ -103,8 +111,9 @@ var StylesheetUtil;
             top: _createBorder(top),
             vertical: null,
         };
-        var idx = stylesheet.borders.borders.push(border) - 1;
-        stylesheet.borders.count = stylesheet.borders.borders.length;
+        var borders = stylesheet.borders || (stylesheet.borders = { borders: [], count: 0 });
+        var idx = borders.borders.push(border) - 1;
+        borders.count = borders.borders.length;
         return idx;
     }
     StylesheetUtil.createBorder = createBorder;
@@ -112,31 +121,34 @@ var StylesheetUtil;
      */
     function findOrCreateBorder(stylesheet, left, right, top, bottom, diagonal) {
         var idx = findBorder(stylesheet, left, right, top, bottom, diagonal);
-        if (idx < 0) {
+        if (!idx) {
             idx = createBorder(stylesheet, left, right, top, bottom, diagonal);
         }
         return idx;
     }
     StylesheetUtil.findOrCreateBorder = findOrCreateBorder;
-    /** Try to find a Font matching the given parameters, return the font's index if found, -1 if no match
+    /** Try to find a Font matching the given parameters, return the font's index if found, null if no match
      */
-    function findFontIdx(stylesheet, fontSize, colorTheme, fontName, fontFamily, bold, italic, underline) {
-        var fonts = stylesheet.fonts.fonts;
-        for (var i = 0, size = fonts.length; i < size; i++) {
-            var fnt = fonts[i];
-            if (((fnt.sz && fnt.sz.val == fontSize) || (!fnt.sz && fontSize == null)) &&
-                ((fnt.color && fnt.color.theme == colorTheme) || (!fnt.color && colorTheme == null)) &&
-                ((fnt.name && fnt.name.val == fontName) || (!fnt.name && fontName == null)) &&
-                ((fnt.family && fnt.family.val == fontFamily) || (!fnt.family && fontFamily == null)) &&
-                ((fnt.b && fnt.b.val == bold) || (!fnt.b && (bold == null || bold == false))) &&
-                ((fnt.i && fnt.i.val == italic) || (!fnt.i && (italic == null || italic == false))) &&
-                ((fnt.u && fnt.u.val == underline) || (!fnt.u && underline == null))) {
-                return i;
+    function findFont(stylesheet, fontSize, colorTheme, fontName, fontFamily, bold, italic, underline) {
+        var _a;
+        var fonts = (_a = stylesheet.fonts) === null || _a === void 0 ? void 0 : _a.fonts;
+        if (fonts != null) {
+            for (var i = 0, size = fonts.length; i < size; i++) {
+                var fnt = fonts[i];
+                if (((fnt.sz && fnt.sz.val == fontSize) || (!fnt.sz && fontSize == null)) &&
+                    ((fnt.color && fnt.color.theme == colorTheme) || (!fnt.color && colorTheme == null)) &&
+                    ((fnt.name && fnt.name.val == fontName) || (!fnt.name && fontName == null)) &&
+                    ((fnt.family && fnt.family.val == fontFamily) || (!fnt.family && fontFamily == null)) &&
+                    ((fnt.b && fnt.b.val == bold) || (!fnt.b && (bold == null || bold == false))) &&
+                    ((fnt.i && fnt.i.val == italic) || (!fnt.i && (italic == null || italic == false))) &&
+                    ((fnt.u && fnt.u.val == underline) || (!fnt.u && underline == null))) {
+                    return i;
+                }
             }
         }
-        return -1;
+        return null;
     }
-    StylesheetUtil.findFontIdx = findFontIdx;
+    StylesheetUtil.findFont = findFont;
     /** Create an Open XML Font object, add it to the stylesheet and return the new font's index
      */
     function createFont(stylesheet, fontSize, colorTheme, fontName, fontFamily, bold, italic, underline) {
@@ -146,7 +158,7 @@ var StylesheetUtil;
             color: colorTheme != null ? { theme: colorTheme } : null,
             condense: null,
             extend: null,
-            family: { val: fontFamily },
+            family: fontFamily ? { val: fontFamily } : null,
             i: italic == true ? { val: italic } : null,
             name: { val: fontName },
             outline: null,
@@ -157,16 +169,17 @@ var StylesheetUtil;
             u: underline != null ? { val: underline } : null,
             vertAlign: null,
         };
-        var idx = stylesheet.fonts.fonts.push(fnt) - 1;
-        stylesheet.fonts.count = stylesheet.fonts.fonts.length;
+        var fonts = stylesheet.fonts || (stylesheet.fonts = { fonts: [], count: 0 });
+        var idx = fonts.fonts.push(fnt) - 1;
+        fonts.count = fonts.fonts.length;
         return idx;
     }
     StylesheetUtil.createFont = createFont;
     /** Try to find a font matching the given parameters, if one cannot be found, create one, return the index of the font found or the index of the newly created font
      */
     function findOrCreateFont(stylesheet, fontSize, colorTheme, fontName, fontFamily, bold, italic, underline) {
-        var idx = findFontIdx(stylesheet, fontSize, colorTheme, fontName, fontFamily, bold, italic, underline);
-        if (idx < 0) {
+        var idx = findFont(stylesheet, fontSize, colorTheme, fontName, fontFamily, bold, italic, underline);
+        if (!idx) {
             idx = createFont(stylesheet, fontSize, colorTheme, fontName, fontFamily, bold, italic, underline);
         }
         return idx;
@@ -175,11 +188,14 @@ var StylesheetUtil;
     /** Try to find a NumberingFormat matching the given parameters, return the number format's ID if found, null if no match
      */
     function findNumberFormatId(stylesheet, formatCode) {
-        var numFmts = stylesheet.numFmts.numFmts;
-        for (var i = 0, size = numFmts.length; i < size; i++) {
-            var numFmt = numFmts[i];
-            if (numFmt.formatCode == formatCode) {
-                return numFmt.numFmtId;
+        var _a;
+        var numFmts = (_a = stylesheet.numFmts) === null || _a === void 0 ? void 0 : _a.numFmts;
+        if (numFmts != null) {
+            for (var i = 0, size = numFmts.length; i < size; i++) {
+                var numFmt = numFmts[i];
+                if (numFmt.formatCode == formatCode) {
+                    return numFmt.numFmtId;
+                }
             }
         }
         return null;
@@ -188,15 +204,16 @@ var StylesheetUtil;
     /** Create an Open XML NumberingFormat object, add it to the stylesheet and return the new number format's ID
      */
     function createNumberFormat(stylesheet, formatCode) {
-        var numFmts = stylesheet.numFmts ? stylesheet.numFmts.numFmts : null;
+        var fmts = stylesheet.numFmts ? stylesheet.numFmts.numFmts : null;
         // assumption: based on the MSDN Open XML documentation, the highest built-in numFmt ID is ~90
-        var highestId = (numFmts && numFmts.length > 0) ? Math.max(numFmts.map(function (nf) { return nf.numFmtId; }).sort(function (a, b) { return b - a; })[0], 100) : 100;
+        var highestId = (fmts && fmts.length > 0) ? Math.max(fmts.map(function (nf) { return nf.numFmtId; }).sort(function (a, b) { return b - a; })[0], 100) : 100;
         var numFmt = {
             formatCode: formatCode,
             numFmtId: highestId + 1,
         };
-        var idx = stylesheet.numFmts.numFmts.push(numFmt) - 1;
-        stylesheet.numFmts.count = stylesheet.numFmts.numFmts.length;
+        var numFmts = stylesheet.numFmts || (stylesheet.numFmts = { numFmts: [], count: 0 });
+        var idx = numFmts.numFmts.push(numFmt) - 1;
+        numFmts.count = numFmts.numFmts.length;
         return idx;
     }
     StylesheetUtil.createNumberFormat = createNumberFormat;
@@ -251,7 +268,7 @@ var StylesheetUtil;
     /** Check if a simple border property is equivalent to an OpenXml.BorderProperty
      */
     function compareBorder(a, b) {
-        return (a.style == b.style) &&
+        return b && (a.style == b.style) &&
             (a.auto == (b.color && b.color.auto)) &&
             (a.indexed == (b.color && b.color.indexed)) &&
             (a.rgb == (b.color && b.color.rgb)) &&
@@ -262,9 +279,15 @@ var StylesheetUtil;
     /** Create an OpenXml.BorderProperty from a simple border property
      */
     function _createBorder(borderData) {
-        return borderData == null ? null : {
+        return {
             style: borderData.style,
-            color: { auto: borderData.auto, indexed: borderData.indexed, rgb: borderData.rgb, theme: borderData.theme, tint: borderData.tint }
+            color: {
+                auto: borderData.auto,
+                indexed: borderData.indexed,
+                rgb: borderData.rgb,
+                theme: borderData.theme,
+                tint: borderData.tint,
+            },
         };
     }
     StylesheetUtil._createBorder = _createBorder;

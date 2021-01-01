@@ -11,8 +11,7 @@ var SharedStringsUtil;
         var sis = sharedStrings.sis;
         for (var i = 0, size = sis.length; i < size; i++) {
             var ss = sis[i];
-            if (ss.t && ss.t.content === str &&
-                (preserveSpace == null || ss.t.preserveSpace == preserveSpace)) {
+            if (ss.t && ss.t.content === str && (preserveSpace == null || ss.t.preserveSpace == preserveSpace)) {
                 return i;
             }
         }
@@ -26,7 +25,7 @@ var SharedStringsUtil;
             t: {
                 content: str,
                 preserveSpace: preserveSpace,
-            }
+            },
         });
     }
     SharedStringsUtil.createSharedString = createSharedString;
@@ -63,7 +62,7 @@ var SharedStringsUtil;
         }
         else {
             var richStrs = sharedStr.rs;
-            for (var i = 0, size = richStrs.length; i < size; i++) {
+            for (var i = 0, size = richStrs === null || richStrs === void 0 ? void 0 : richStrs.length; i < size; i++) {
                 richStrs[i].t.content = strs[i];
             }
         }
@@ -106,7 +105,7 @@ var SharedStringsUtil;
         else {
             var res = [];
             var richStrs = sharedStr.rs;
-            for (var i = 0, size = richStrs.length; i < size; i++) {
+            for (var i = 0, size = richStrs === null || richStrs === void 0 ? void 0 : richStrs.length; i < size; i++) {
                 res.push(richStrs[i].t.content);
             }
             return res;

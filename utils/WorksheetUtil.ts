@@ -1,5 +1,4 @@
 ﻿import CellRefUtil = require("./CellRefUtil");
-import CellFormulaValues = require("../../xlsx-spec-models/enums/CellFormulaValues");
 import CellValues = require("../../xlsx-spec-models/enums/CellValues");
 import SharedStringsUtil = require("./SharedStringsUtil");
 
@@ -10,7 +9,7 @@ import SharedStringsUtil = require("./SharedStringsUtil");
 module WorksheetUtil {
 
     export interface SimpleCellData {
-        val?: string | number;
+        val?: string | number | null;
         vals?: string[];
         cellType: CellValues;
         isFormula?: boolean;
@@ -34,14 +33,14 @@ module WorksheetUtil {
 
 
     // TODO support more complex cells
-    export function addPlainRow(worksheet: OpenXml.Worksheet, columnVals: (string | number)[], dyDescent: number): OpenXml.Row {
+    export function addPlainRow(worksheet: OpenXml.Worksheet, columnVals: (string | number)[], dyDescent: number): OpenXml.Row | null {
         var res: SimpleCellData[] = [];
 
         for (var i = 0, size = columnVals.length; i < size; i++) {
             var cellVal = columnVals[i];
             res.push({
                 val: cellVal != null ? String(cellVal) : null,
-                cellType: getCellValueType(cellVal),
+                cellType: getCellValueType(cellVal) ?? CellValues.Error,
                 isFormula: isFormulaString(cellVal),
             });
         }
@@ -51,7 +50,7 @@ module WorksheetUtil {
 
 
     // add a row to the end/bottom of the spreadsheet
-    export function addRow(worksheet: OpenXml.Worksheet, columnOffset: number, dyDescent: number, columnVals: SimpleCellData[]): OpenXml.Row {
+    export function addRow(worksheet: OpenXml.Worksheet, columnOffset: number, dyDescent: number, columnVals: SimpleCellData[]): OpenXml.Row | null {
         var rowNum = getGreatestRowNum(worksheet.sheetData.rows) + 1;
         return setRow(worksheet, rowNum, columnOffset, dyDescent, columnVals);
     }
@@ -148,10 +147,10 @@ module WorksheetUtil {
         if (rowIdx > -1) {
             var rowData = worksheet.sheetData.rows[rowIdx];
             var cell = createCell(rowIdx + 1, col, cellVal);
-            return insertOrOverwriteCell(rowData.cs, cell, undefined, mergeIfExisting, overwriteSharedStrings, sharedStrings);
+            return insertOrOverwriteCell(rowData.cs, cell, false, mergeIfExisting, overwriteSharedStrings, sharedStrings);
         }
         else {
-            var resRow = setRow(worksheet, row, col, dyDescent, [cellVal]);
+            var resRow = <OpenXml.Row><any>setRow(worksheet, row, col, dyDescent, [cellVal]); // won't return null because one cell value is provided
             return resRow.cs[0];
         }
     }
@@ -159,7 +158,7 @@ module WorksheetUtil {
 
     export function updateBounds(ws: OpenXml.Worksheet) {
         var sheetBounds = getLeastAndGreatestRef(ws.sheetData.rows);
-        ws.dimension.ref = sheetBounds.min + ":" + sheetBounds.max;
+        (<OpenXml.SheetDimension><any>ws.dimension).ref = sheetBounds.min + ":" + sheetBounds.max;
     }
 
 
@@ -208,7 +207,7 @@ module WorksheetUtil {
     }
 
 
-    export function getCellValueType(val: any): CellValues {
+    export function getCellValueType(val: any): CellValues | null {
         var type = typeof val;
         if (type === "string") {
             return CellValues.String;
@@ -228,7 +227,7 @@ module WorksheetUtil {
     }
 
 
-    function createCellSimpleFormula(cell: SimpleCellData): OpenXml.CellFormula {
+    function createCellSimpleFormula(cell: SimpleCellData): OpenXml.CellFormula | null {
         if (cell.isFormula) {
             return {
                 content: cell.formulaString != null ? cell.formulaString : <string>cell.val,
@@ -423,26 +422,26 @@ module WorksheetUtil {
      * @param c2 takes precendence
      */
     export function _mergeCells(c1: OpenXml.Cell, c2: OpenXml.Cell): OpenXml.Cell {
-        var useC2Content = (c2 && c2.v && c2.v.content);
-        var useC2InlineStr = (c2 && c2.is && c2.is.rs) || (c2 && c2.is && c2.is.t);
+        var c2Content = (c2 && c2.v && c2.v.content) ? c2.v.content : null;
+        var c2InlineStr = c2 && c2.is && (c2.is.rs || c2.is.t) ? c2.is : null;
 
         var res: OpenXml.Cell = {
             cm: c2 && c2.cm ? c2.cm : (c1 ? c1.cm : undefined),
             f: (c2 && c2.f) || (c1 && c1.f) ? {
-                content: c2 && c2.f && c2.f.content ? c2.f.content : (c1 && c1.f ? c1.f.content : undefined),
+                content: c2 && c2.f && c2.f.content ? c2.f.content : (c1 && c1.f ? c1.f.content : ""),
                 ref: c2 && c2.f && c2.f.ref ? c2.f.ref : (c1 && c1.f ? c1.f.ref : undefined),
                 si: c2 && c2.f && c2.f.si ? c2.f.si : (c1 && c1.f ? c1.f.si : undefined),
                 t: c2 && c2.f && c2.f.t ? c2.f.t : (c1 && c1.f ? c1.f.t : undefined),
             } : undefined,
-            is: (c2 && c2.is) || (c1 && c1.is) ? {
-                rs: useC2InlineStr ? c2.is.rs : (c1 && c1.is ? c1.is.rs : undefined),
-                t: useC2InlineStr ? c2.is.t : (c1 && c1.is ? c1.is.t : undefined),
+            is: c2InlineStr || (c1 && c1.is) ? {
+                rs: c2InlineStr ? c2InlineStr.rs : (c1 && c1.is ? c1.is.rs : []),
+                t: c2InlineStr ? c2InlineStr.t : (c1 && c1.is ? c1.is.t : undefined),
             } : undefined,
-            r: c2 && c2.r ? c2.r : (c1 ? c1.r : undefined),
+            r: c2 && c2.r ? c2.r : (c1 ? c1.r : ""),
             s: c2 && c2.s ? c2.s : (c1 ? c1.s : undefined),
-            t: useC2Content || useC2InlineStr ? c2.t : (c1 ? c1.t : undefined),
+            t: c2 && c2.t ? c2.t : (c1 ? c1.t : undefined),
             v: (c2 && c2.v) || (c1 && c1.v) ? {
-                content: useC2Content ? c2.v.content : (c1 && c1.v ? c1.v.content : undefined),
+                content: c2Content ? c2Content : (c1 && c1.v ? c1.v.content : ""),
             } : undefined,
             vm: c2 && c2.vm ? c2.vm : (c1 ? c1.vm : undefined),
         };
@@ -460,12 +459,12 @@ module WorksheetUtil {
     export function _lookupAndOverwriteSharedStrings(sharedStrings: OpenXml.SharedStringTable, origCell: OpenXml.Cell, newCell: OpenXml.Cell): void {
         // if the original cell used shared strings
         if (origCell.v && CellValues.SharedString.xmlValue == origCell.t) {
-            var isInlineStr: boolean, isInvalidFormatStr: boolean;
+            var isInlineStr: boolean = false, isInvalidFormatStr: boolean = false;
             // if the new cell uses inline strings
-            if ((isInlineStr = (newCell.is && CellValues.InlineString.xmlValue == newCell.t)) || (isInvalidFormatStr = (newCell.v && CellValues.String.xmlValue == newCell.t))) {
+            if ((isInlineStr = (newCell.is != null && CellValues.InlineString.xmlValue == newCell.t)) || (isInvalidFormatStr = (newCell.v != null && CellValues.String.xmlValue == newCell.t))) {
                 var ssIdx = parseInt(origCell.v.content);
                 // overwrite the original shared string with the new inline string and use it instead
-                var strs = isInlineStr ? SharedStringsUtil.extractText(newCell.is) : (isInvalidFormatStr ? [newCell.v.content] : null);
+                var strs = isInlineStr ? SharedStringsUtil.extractText(<OpenXml.InlineString><any>newCell.is/*because of 'isInlineStr'*/) : (isInvalidFormatStr ? [(<OpenXml.CellValue><any>newCell.v/*because of 'isInvalidFormatStr'*/).content] : []);
                 SharedStringsUtil.setSharedString(sharedStrings, ssIdx, strs);
                 newCell.is = null;
                 newCell.v = {

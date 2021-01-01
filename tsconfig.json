@@ -10,7 +10,7 @@
     "noImplicitThis": true,
     "removeComments": false,
     "sourceMap": false,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "target": "es5"
   }
 }

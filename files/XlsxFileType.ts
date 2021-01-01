@@ -9,7 +9,7 @@ class XlsxFileTypeImpl implements OpenXmlIo.XlsxFileType {
     public contentType: string;
     public xlsxFilePath: string;
     public pathIsTemplate: boolean;
-    public pathTemplateToken: string;
+    public pathTemplateToken: string | null;
 
 
     /**
@@ -20,7 +20,9 @@ class XlsxFileTypeImpl implements OpenXmlIo.XlsxFileType {
      * @param pathIsTemplate: whether the 'xlsxFilePath' is a template
      * @param pathTemplateToken: the template token/string to replace in 'xslxFilePath' with a sheet number or resource identifier to make it a valid path
      */
-    constructor(schemaUrl: string, contentType: string, schemaTarget: string, xlsxFilePath: string, pathIsTemplate: boolean, pathTemplateToken: string) {
+    constructor(schemaUrl: string, contentType: string, schemaTarget: string, xlsxFilePath: string, pathIsTemplate: false, pathTemplateToken: string | null);
+    constructor(schemaUrl: string, contentType: string, schemaTarget: string, xlsxFilePath: string, pathIsTemplate: boolean, pathTemplateToken: string);
+    constructor(schemaUrl: string, contentType: string, schemaTarget: string, xlsxFilePath: string, pathIsTemplate: boolean, pathTemplateToken: string | null) {
         this.schemaUrl = schemaUrl;
         this.contentType = contentType;
         this.schemaTarget = schemaTarget;
@@ -30,9 +32,9 @@ class XlsxFileTypeImpl implements OpenXmlIo.XlsxFileType {
     }
 
 
-    public static getXmlFilePath(sheetNum: number, info: OpenXmlIo.XlsxFileType) {
+    public static getXmlFilePath(sheetNum: string | number | null, info: OpenXmlIo.XlsxFileType) {
         // TODO the path template token may not be a sheet number, could be a resource identifier (i.e. an image or item prop number)
-        return (info.pathIsTemplate ? info.xlsxFilePath.split(info.pathTemplateToken).join(<string><any>sheetNum) : info.xlsxFilePath);
+        return (info.pathIsTemplate ? info.xlsxFilePath.split(<string><any>info.pathTemplateToken).join(<string><any>sheetNum) : info.xlsxFilePath);
     }
 
 }

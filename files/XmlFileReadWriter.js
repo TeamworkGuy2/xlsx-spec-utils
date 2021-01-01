@@ -55,7 +55,7 @@ var XmlFileReadWriter = /** @class */ (function () {
         this.prepForWrite(xmlDoc, data);
         var elem = this.rootReadWriter.write(xmlDoc, data);
         var elemDom = xmlDoc.dom.childNodes[0];
-        xmlDoc.addChilds(elemDom, xmlDoc.getChilds(elem));
+        xmlDoc.addChilds(elemDom, elem.childNodes);
         return xmlDoc.dom;
     };
     /** Convert a DOM node (can be an entire document or a subtree) to a string

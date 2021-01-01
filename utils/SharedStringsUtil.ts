@@ -5,15 +5,13 @@
  */
 module SharedStringsUtil {
 
-
     /** Try to find a shared string matching the given parameters, return the shared string's index if found, -1 if no match
      */
     export function findSharedString(sharedStrings: OpenXml.SharedStringTable, str: string, preserveSpace?: boolean): number {
         var sis = sharedStrings.sis;
         for (var i = 0, size = sis.length; i < size; i++) {
             var ss = sis[i];
-            if (ss.t && ss.t.content === str &&
-                    (preserveSpace == null || ss.t.preserveSpace == preserveSpace)) {
+            if (ss.t && ss.t.content === str && (preserveSpace == null || ss.t.preserveSpace == preserveSpace)) {
                 return i;
             }
         }
@@ -28,7 +26,7 @@ module SharedStringsUtil {
             t: {
                 content: str,
                 preserveSpace: preserveSpace,
-            }
+            },
         });
     }
 
@@ -67,8 +65,8 @@ module SharedStringsUtil {
             sharedStr.t.content = strs[0];
         }
         else {
-            var richStrs = sharedStr.rs;
-            for (var i = 0, size = richStrs.length; i < size; i++) {
+            var richStrs = <OpenXml.RichTextRun[]><any>sharedStr.rs;
+            for (var i = 0, size = richStrs?.length; i < size; i++) {
                 richStrs[i].t.content = strs[i];
             }
         }
@@ -114,8 +112,8 @@ module SharedStringsUtil {
         }
         else {
             var res: string[] = [];
-            var richStrs = sharedStr.rs;
-            for (var i = 0, size = richStrs.length; i < size; i++) {
+            var richStrs = <OpenXml.RichTextRun[]><any>sharedStr.rs;
+            for (var i = 0, size = richStrs?.length; i < size; i++) {
                 res.push(richStrs[i].t.content);
             }
             return res;

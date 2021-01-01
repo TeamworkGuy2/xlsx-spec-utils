@@ -6,10 +6,14 @@
 var XlsxDomErrorsImpl;
 (function (XlsxDomErrorsImpl) {
     var typeCheck = XlsxDomErrorsImpl; // TODO type-checker
-    function missingNode(nodeName) {
-        return new Error("Error reading XLSX template, missing required '" + nodeName + "' node");
+    function missingNode(nodeName, parent) {
+        return new Error("Error reading XLSX, missing required node '" + nodeName + "'");
     }
     XlsxDomErrorsImpl.missingNode = missingNode;
+    function missingAttribute(attributeName, parent) {
+        return new Error("Error reading XLSX, missing required attribute '" + attributeName + "'");
+    }
+    XlsxDomErrorsImpl.missingAttribute = missingAttribute;
     function expectNode(node, expectedNodeName, parentNodeName, idx, size) {
         if (node.tagName !== expectedNodeName) {
             throw unexpectedNode(node.tagName, expectedNodeName, parentNodeName, idx, size);
@@ -17,7 +21,7 @@ var XlsxDomErrorsImpl;
     }
     XlsxDomErrorsImpl.expectNode = expectNode;
     function unexpectedNode(badNodeName, expectedNodeName, parentNodeName, idx, size) {
-        return new Error("Error reading XLSX template, unexpected '" + badNodeName + "' node" +
+        return new Error("Error reading XLSXtemplate, unexpected node '" + badNodeName + "'" +
             (expectedNodeName ? ", expected only '" + expectedNodeName + "' nodes" : "") +
             (parentNodeName ? ", of parent node '" + parentNodeName + "'" : "") +
             (idx || size ? (idx ? ", index=" + idx : "") + (size ? ", size=" + size : "") : ""));

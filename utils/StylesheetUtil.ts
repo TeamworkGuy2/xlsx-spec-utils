@@ -33,17 +33,21 @@ module StylesheetUtil {
         return _findCellFormat(stylesheet, fontRes, numFmtRes, borderRes, alignment);
     }
 
+
     function _findCellFormat(stylesheet: OpenXml.Stylesheet, font: IndexFlag, numFmt: IdFlag, border: IndexFlag, alignment: OpenXml.Alignment): number {
-        var cellFormats = stylesheet.cellXfs.xfs;
-        for (var i = 0, size = cellFormats.length; i < size; i++) {
-            var fmt = cellFormats[i];
-            var style = stylesheet.cellStyleXfs.xfs[fmt.xfId];
-            // the complex logic and '... || ...Id == 0' is for handling nulls and default values (zero being a default ID)
-            if (((font == null) || (((fmt.applyFont == font.apply || font.apply == undefined) && fmt.fontId === font.index) || (style.applyFont == font.apply && style.fontId === font.index))) &&
+        var cellFormats = stylesheet.cellXfs?.xfs;
+        var cellStyleFormats = stylesheet.cellStyleXfs?.xfs;
+        if (cellFormats != null && cellStyleFormats != null) {
+            for (var i = 0, size = cellFormats.length; i < size; i++) {
+                var fmt = cellFormats[i];
+                var style = cellStyleFormats[fmt?.xfId ?? -1];
+                // the complex logic and '... || ...Id == 0' is for handling nulls and default values (zero being a default ID)
+                if (((font == null) || (((fmt.applyFont == font.apply || font.apply == undefined) && fmt.fontId === font.index) || (style.applyFont == font.apply && style.fontId === font.index))) &&
                     ((numFmt == null) || (((fmt.applyNumberFormat == numFmt.apply || numFmt.apply == undefined || numFmt.id == 0) && fmt.numFmtId === numFmt.id) || ((style.applyNumberFormat == numFmt.apply || numFmt.id == 0) && style.numFmtId === numFmt.id))) &&
                     ((border == null) || (((fmt.applyBorder == border.apply || border.apply == undefined || border.index == 0) && fmt.borderId === border.index) || ((style.applyBorder == border.apply || border.index == 0) && style.borderId === border.index))) &&
                     compareCellFormatAlignment(fmt, style, alignment)) {
-                return i;
+                    return i;
+                }
             }
         }
         return -1;
@@ -58,6 +62,7 @@ module StylesheetUtil {
         var borderRes = (typeof border === "number") ?  { index: border, apply: true } : border;
         return _createCellFormat(stylesheet, fontRes, numFmtRes, borderRes, alignment);
     }
+
 
     function _createCellFormat(stylesheet: OpenXml.Stylesheet, font: IndexFlag, numFmt: IdFlag, border: IndexFlag, alignment: OpenXml.Alignment): number {
         // allow null 'apply' to mean false while still setting the corresponding 'id' or 'index'
@@ -78,8 +83,9 @@ module StylesheetUtil {
             quotePrefix: false,
             xfId: 0,
         };
-        var idx = stylesheet.cellXfs.xfs.push(style) - 1;
-        stylesheet.cellXfs.count = stylesheet.cellXfs.xfs.length;
+        var cellFormats = stylesheet.cellXfs || (stylesheet.cellXfs = { xfs: [], count: 0 });
+        var idx = cellFormats.xfs.push(style) - 1;
+        cellFormats.count = cellFormats.xfs.length;
         return idx;
     }
 
@@ -95,21 +101,23 @@ module StylesheetUtil {
     }
 
 
-    /** Try to find a border matching the given parameters, return the border's index if found, -1 if no match
+    /** Try to find a border matching the given parameters, return the border's index if found, null if no match
      */
-    export function findBorder(stylesheet: OpenXml.Stylesheet, left: SimpleBorderProperty, right: SimpleBorderProperty, top: SimpleBorderProperty, bottom: SimpleBorderProperty, diagonal: SimpleBorderProperty): number {
-        var borders = stylesheet.borders.borders;
-        for (var i = 0, size = borders.length; i < size; i++) {
-            var brd = borders[i];
-            if (compareBorder(left, brd.left) &&
+    export function findBorder(stylesheet: OpenXml.Stylesheet, left: SimpleBorderProperty, right: SimpleBorderProperty, top: SimpleBorderProperty, bottom: SimpleBorderProperty, diagonal: SimpleBorderProperty): number | null {
+        var borders = stylesheet.borders?.borders;
+        if (borders != null) {
+            for (var i = 0, size = borders.length; i < size; i++) {
+                var brd = borders[i];
+                if (compareBorder(left, brd.left) &&
                     compareBorder(right, brd.right) &&
                     compareBorder(top, brd.top) &&
                     compareBorder(bottom, brd.bottom) &&
                     compareBorder(diagonal, brd.diagonal)) {
-                return i;
+                    return i;
+                }
             }
         }
-        return -1;
+        return null;
     }
 
 
@@ -130,8 +138,9 @@ module StylesheetUtil {
             top: _createBorder(top),
             vertical: null,
         };
-        var idx = stylesheet.borders.borders.push(border) - 1;
-        stylesheet.borders.count = stylesheet.borders.borders.length;
+        var borders = stylesheet.borders || (stylesheet.borders = { borders: [], count: 0 });
+        var idx = borders.borders.push(border) - 1;
+        borders.count = borders.borders.length;
         return idx;
     }
 
@@ -140,30 +149,32 @@ module StylesheetUtil {
      */
     export function findOrCreateBorder(stylesheet: OpenXml.Stylesheet, left: SimpleBorderProperty, right: SimpleBorderProperty, top: SimpleBorderProperty, bottom: SimpleBorderProperty, diagonal: SimpleBorderProperty): number {
         var idx = findBorder(stylesheet, left, right, top, bottom, diagonal);
-        if (idx < 0) {
+        if (!idx) {
             idx = createBorder(stylesheet, left, right, top, bottom, diagonal);
         }
         return idx;
     }
 
 
-    /** Try to find a Font matching the given parameters, return the font's index if found, -1 if no match
+    /** Try to find a Font matching the given parameters, return the font's index if found, null if no match
      */
-    export function findFontIdx(stylesheet: OpenXml.Stylesheet, fontSize: number, colorTheme: number, fontName: string, fontFamily: number, bold: boolean, italic: boolean, underline: string): number {
-        var fonts = stylesheet.fonts.fonts;
-        for (var i = 0, size = fonts.length; i < size; i++) {
-            var fnt = fonts[i];
-            if (((fnt.sz && fnt.sz.val == fontSize) || (!fnt.sz && fontSize == null)) &&
+    export function findFont(stylesheet: OpenXml.Stylesheet, fontSize: number, colorTheme: number, fontName: string, fontFamily: number, bold: boolean, italic: boolean, underline: string): number | null {
+        var fonts = stylesheet.fonts?.fonts;
+        if (fonts != null) {
+            for (var i = 0, size = fonts.length; i < size; i++) {
+                var fnt = fonts[i];
+                if (((fnt.sz && fnt.sz.val == fontSize) || (!fnt.sz && fontSize == null)) &&
                     ((fnt.color && fnt.color.theme == colorTheme) || (!fnt.color && colorTheme == null)) &&
                     ((fnt.name && fnt.name.val == fontName) || (!fnt.name && fontName == null)) &&
                     ((fnt.family && fnt.family.val == fontFamily) || (!fnt.family && fontFamily == null)) &&
                     ((fnt.b && fnt.b.val == bold) || (!fnt.b && (bold == null || bold == false))) &&
                     ((fnt.i && fnt.i.val == italic) || (!fnt.i && (italic == null || italic == false))) &&
                     ((fnt.u && fnt.u.val == underline) || (!fnt.u && underline == null))) {
-                return i;
+                    return i;
+                }
             }
         }
-        return -1;
+        return null;
     }
 
 
@@ -176,7 +187,7 @@ module StylesheetUtil {
             color: colorTheme != null ? { theme: colorTheme } : null,
             condense: null,
             extend: null,
-            family: { val: fontFamily },
+            family: fontFamily ? { val: fontFamily } : null,
             i: italic == true ? { val: italic } : null,
             name: { val: fontName },
             outline: null,
@@ -187,8 +198,9 @@ module StylesheetUtil {
             u: underline != null ? { val: <OpenXml.ST_UnderlineValues>underline } : null,
             vertAlign: null,
         };
-        var idx = stylesheet.fonts.fonts.push(fnt) - 1;
-        stylesheet.fonts.count = stylesheet.fonts.fonts.length;
+        var fonts = stylesheet.fonts || (stylesheet.fonts = { fonts: [], count: 0 });
+        var idx = fonts.fonts.push(fnt) - 1;
+        fonts.count = fonts.fonts.length;
         return idx;
     }
 
@@ -196,8 +208,8 @@ module StylesheetUtil {
     /** Try to find a font matching the given parameters, if one cannot be found, create one, return the index of the font found or the index of the newly created font
      */
     export function findOrCreateFont(stylesheet: OpenXml.Stylesheet, fontSize: number, colorTheme: number, fontName: string, fontFamily: number, bold: boolean, italic: boolean, underline: string): number {
-        var idx = findFontIdx(stylesheet, fontSize, colorTheme, fontName, fontFamily, bold, italic, underline);
-        if (idx < 0) {
+        var idx = findFont(stylesheet, fontSize, colorTheme, fontName, fontFamily, bold, italic, underline);
+        if (!idx) {
             idx = createFont(stylesheet, fontSize, colorTheme, fontName, fontFamily, bold, italic, underline);
         }
         return idx;
@@ -207,12 +219,14 @@ module StylesheetUtil {
 
     /** Try to find a NumberingFormat matching the given parameters, return the number format's ID if found, null if no match
      */
-    export function findNumberFormatId(stylesheet: OpenXml.Stylesheet, formatCode: string): number {
-        var numFmts = stylesheet.numFmts.numFmts;
-        for (var i = 0, size = numFmts.length; i < size; i++) {
-            var numFmt = numFmts[i];
-            if (numFmt.formatCode == formatCode) {
-                return numFmt.numFmtId;
+    export function findNumberFormatId(stylesheet: OpenXml.Stylesheet, formatCode: string): number | null {
+        var numFmts = stylesheet.numFmts?.numFmts;
+        if (numFmts != null) {
+            for (var i = 0, size = numFmts.length; i < size; i++) {
+                var numFmt = numFmts[i];
+                if (numFmt.formatCode == formatCode) {
+                    return numFmt.numFmtId;
+                }
             }
         }
         return null;
@@ -222,16 +236,17 @@ module StylesheetUtil {
     /** Create an Open XML NumberingFormat object, add it to the stylesheet and return the new number format's ID
      */
     export function createNumberFormat(stylesheet: OpenXml.Stylesheet, formatCode: string): number {
-        var numFmts = stylesheet.numFmts ? stylesheet.numFmts.numFmts : null;
+        var fmts = stylesheet.numFmts ? stylesheet.numFmts.numFmts : null;
         // assumption: based on the MSDN Open XML documentation, the highest built-in numFmt ID is ~90
-        var highestId = (numFmts && numFmts.length > 0) ? Math.max(numFmts.map((nf) => nf.numFmtId).sort((a, b) => b - a)[0], 100) : 100;
+        var highestId = (fmts && fmts.length > 0) ? Math.max(fmts.map((nf) => nf.numFmtId).sort((a, b) => b - a)[0], 100) : 100;
 
         var numFmt: OpenXml.NumberingFormat = {
             formatCode: formatCode,
             numFmtId: highestId + 1,
         };
-        var idx = stylesheet.numFmts.numFmts.push(numFmt) - 1;
-        stylesheet.numFmts.count = stylesheet.numFmts.numFmts.length;
+        var numFmts = stylesheet.numFmts || (stylesheet.numFmts = { numFmts: [], count: 0 });
+        var idx = numFmts.numFmts.push(numFmt) - 1;
+        numFmts.count = numFmts.numFmts.length;
         return idx;
     }
 
@@ -290,8 +305,8 @@ module StylesheetUtil {
 
     /** Check if a simple border property is equivalent to an OpenXml.BorderProperty
      */
-    export function compareBorder(a: SimpleBorderProperty, b: OpenXml.BorderProperty) {
-        return (a.style == b.style) &&
+    export function compareBorder(a: SimpleBorderProperty, b: OpenXml.BorderProperty | null | undefined) {
+        return b && (a.style == b.style) &&
             (a.auto == (b.color && b.color.auto)) &&
             (a.indexed == (b.color && b.color.indexed)) &&
             (a.rgb == (b.color && b.color.rgb)) &&
@@ -303,9 +318,15 @@ module StylesheetUtil {
     /** Create an OpenXml.BorderProperty from a simple border property
      */
     export function _createBorder(borderData: SimpleBorderProperty): OpenXml.BorderProperty {
-        return borderData == null ? null : {
-            style: <OpenXml.ST_BorderStyle>borderData.style,
-            color: { auto: borderData.auto, indexed: borderData.indexed, rgb: borderData.rgb, theme: borderData.theme, tint: borderData.tint }
+        return {
+            style: <OpenXml.ST_BorderStyle | null>borderData.style,
+            color: {
+                auto: borderData.auto,
+                indexed: borderData.indexed,
+                rgb: borderData.rgb,
+                theme: borderData.theme,
+                tint: borderData.tint,
+            },
         };
     }
 

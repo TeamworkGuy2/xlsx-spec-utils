@@ -19,12 +19,13 @@ var WorksheetUtil;
     WorksheetUtil.addCalcChainRef = addCalcChainRef;
     // TODO support more complex cells
     function addPlainRow(worksheet, columnVals, dyDescent) {
+        var _a;
         var res = [];
         for (var i = 0, size = columnVals.length; i < size; i++) {
             var cellVal = columnVals[i];
             res.push({
                 val: cellVal != null ? String(cellVal) : null,
-                cellType: getCellValueType(cellVal),
+                cellType: (_a = getCellValueType(cellVal)) !== null && _a !== void 0 ? _a : CellValues.Error,
                 isFormula: isFormulaString(cellVal),
             });
         }
@@ -122,10 +123,10 @@ var WorksheetUtil;
         if (rowIdx > -1) {
             var rowData = worksheet.sheetData.rows[rowIdx];
             var cell = createCell(rowIdx + 1, col, cellVal);
-            return insertOrOverwriteCell(rowData.cs, cell, undefined, mergeIfExisting, overwriteSharedStrings, sharedStrings);
+            return insertOrOverwriteCell(rowData.cs, cell, false, mergeIfExisting, overwriteSharedStrings, sharedStrings);
         }
         else {
-            var resRow = setRow(worksheet, row, col, dyDescent, [cellVal]);
+            var resRow = setRow(worksheet, row, col, dyDescent, [cellVal]); // won't return null because one cell value is provided
             return resRow.cs[0];
         }
     }
@@ -382,25 +383,25 @@ var WorksheetUtil;
      * @param c2 takes precendence
      */
     function _mergeCells(c1, c2) {
-        var useC2Content = (c2 && c2.v && c2.v.content);
-        var useC2InlineStr = (c2 && c2.is && c2.is.rs) || (c2 && c2.is && c2.is.t);
+        var c2Content = (c2 && c2.v && c2.v.content) ? c2.v.content : null;
+        var c2InlineStr = c2 && c2.is && (c2.is.rs || c2.is.t) ? c2.is : null;
         var res = {
             cm: c2 && c2.cm ? c2.cm : (c1 ? c1.cm : undefined),
             f: (c2 && c2.f) || (c1 && c1.f) ? {
-                content: c2 && c2.f && c2.f.content ? c2.f.content : (c1 && c1.f ? c1.f.content : undefined),
+                content: c2 && c2.f && c2.f.content ? c2.f.content : (c1 && c1.f ? c1.f.content : ""),
                 ref: c2 && c2.f && c2.f.ref ? c2.f.ref : (c1 && c1.f ? c1.f.ref : undefined),
                 si: c2 && c2.f && c2.f.si ? c2.f.si : (c1 && c1.f ? c1.f.si : undefined),
                 t: c2 && c2.f && c2.f.t ? c2.f.t : (c1 && c1.f ? c1.f.t : undefined),
             } : undefined,
-            is: (c2 && c2.is) || (c1 && c1.is) ? {
-                rs: useC2InlineStr ? c2.is.rs : (c1 && c1.is ? c1.is.rs : undefined),
-                t: useC2InlineStr ? c2.is.t : (c1 && c1.is ? c1.is.t : undefined),
+            is: c2InlineStr || (c1 && c1.is) ? {
+                rs: c2InlineStr ? c2InlineStr.rs : (c1 && c1.is ? c1.is.rs : []),
+                t: c2InlineStr ? c2InlineStr.t : (c1 && c1.is ? c1.is.t : undefined),
             } : undefined,
-            r: c2 && c2.r ? c2.r : (c1 ? c1.r : undefined),
+            r: c2 && c2.r ? c2.r : (c1 ? c1.r : ""),
             s: c2 && c2.s ? c2.s : (c1 ? c1.s : undefined),
-            t: useC2Content || useC2InlineStr ? c2.t : (c1 ? c1.t : undefined),
+            t: c2 && c2.t ? c2.t : (c1 ? c1.t : undefined),
             v: (c2 && c2.v) || (c1 && c1.v) ? {
-                content: useC2Content ? c2.v.content : (c1 && c1.v ? c1.v.content : undefined),
+                content: c2Content ? c2Content : (c1 && c1.v ? c1.v.content : ""),
             } : undefined,
             vm: c2 && c2.vm ? c2.vm : (c1 ? c1.vm : undefined),
         };
@@ -417,12 +418,12 @@ var WorksheetUtil;
     function _lookupAndOverwriteSharedStrings(sharedStrings, origCell, newCell) {
         // if the original cell used shared strings
         if (origCell.v && CellValues.SharedString.xmlValue == origCell.t) {
-            var isInlineStr, isInvalidFormatStr;
+            var isInlineStr = false, isInvalidFormatStr = false;
             // if the new cell uses inline strings
-            if ((isInlineStr = (newCell.is && CellValues.InlineString.xmlValue == newCell.t)) || (isInvalidFormatStr = (newCell.v && CellValues.String.xmlValue == newCell.t))) {
+            if ((isInlineStr = (newCell.is != null && CellValues.InlineString.xmlValue == newCell.t)) || (isInvalidFormatStr = (newCell.v != null && CellValues.String.xmlValue == newCell.t))) {
                 var ssIdx = parseInt(origCell.v.content);
                 // overwrite the original shared string with the new inline string and use it instead
-                var strs = isInlineStr ? SharedStringsUtil.extractText(newCell.is) : (isInvalidFormatStr ? [newCell.v.content] : null);
+                var strs = isInlineStr ? SharedStringsUtil.extractText(newCell.is /*because of 'isInlineStr'*/) : (isInvalidFormatStr ? [newCell.v /*because of 'isInvalidFormatStr'*/.content] : []);
                 SharedStringsUtil.setSharedString(sharedStrings, ssIdx, strs);
                 newCell.is = null;
                 newCell.v = {

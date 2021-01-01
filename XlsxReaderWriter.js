@@ -84,8 +84,8 @@ var XlsxReaderWriter;
     }
     function prepSharedStringsForWrite(xmlDoc, inst) {
         var sharedStrings = xmlDoc.dom.childNodes[0];
-        xmlDoc.removeNodeAttr(sharedStrings, "count");
-        xmlDoc.removeNodeAttr(sharedStrings, "uniqueCount");
+        xmlDoc.removeAttr(sharedStrings, "count");
+        xmlDoc.removeAttr(sharedStrings, "uniqueCount");
         xmlDoc.removeChilds(sharedStrings);
     }
     function prepStylesForWrite(xmlDoc, inst) {

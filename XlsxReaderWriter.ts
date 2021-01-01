@@ -35,23 +35,23 @@ module XlsxReaderWriter {
 
 
     export interface ParsedWorksheet {
-        sheetRels: OpenXml.Relationships;
-        comments: OpenXml.Comments;
-        worksheet: OpenXml.Worksheet;
+        sheetRels: OpenXml.Relationships | null;
+        comments: OpenXml.Comments | null;
+        worksheet: OpenXml.Worksheet | null;
     }
 
 
     /** The hope is to eventually implement all files, but these are the only ones currently supported
      */
     export interface ParsedXlsxFileInst {
-        rels: OpenXml.Relationships;
-        contentTypes: OpenXml.ContentTypes;
-        workbookRels: OpenXml.Relationships;
-        calcChain: OpenXml.CalculationChain;
-        sharedStrings: OpenXml.SharedStringTable;
-        stylesheet: OpenXml.Stylesheet;
-        workbook: OpenXml.Workbook;
-        worksheetDrawing: OpenXml.WorksheetDrawing;
+        rels: OpenXml.Relationships | null;
+        contentTypes: OpenXml.ContentTypes | null;
+        workbookRels: OpenXml.Relationships | null;
+        calcChain: OpenXml.CalculationChain | null;
+        sharedStrings: OpenXml.SharedStringTable | null;
+        stylesheet: OpenXml.Stylesheet | null;
+        workbook: OpenXml.Workbook | null;
+        worksheetDrawing: OpenXml.WorksheetDrawing | null;
         worksheets: ParsedWorksheet[];
     }
 
@@ -153,8 +153,8 @@ module XlsxReaderWriter {
 
     function prepSharedStringsForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.SharedStringTable) {
         var sharedStrings = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
-        xmlDoc.removeNodeAttr(sharedStrings, "count");
-        xmlDoc.removeNodeAttr(sharedStrings, "uniqueCount");
+        xmlDoc.removeAttr(sharedStrings, "count");
+        xmlDoc.removeAttr(sharedStrings, "uniqueCount");
         xmlDoc.removeChilds(sharedStrings);
     }
 
@@ -304,7 +304,7 @@ module XlsxReaderWriter {
     }
 
 
-    function loadXmlFile<T>(sheetNum: number, readFileData: (path: string) => string, loader: OpenXmlIo.FileReadWriter<T>): T {
+    function loadXmlFile<T>(sheetNum: string | number | null, readFileData: (path: string) => string, loader: OpenXmlIo.FileReadWriter<T>): T | null {
         var path = XlsxFileType.getXmlFilePath(sheetNum, loader.fileInfo);
         var data = readFileData(path);
         var inst = data != null ? loader.read(data) : null;
@@ -312,7 +312,7 @@ module XlsxReaderWriter {
     }
 
 
-    function saveXmlFile<T>(sheetNum: number, writeFileData: (path: string, data: string) => void, data: T, writer: OpenXmlIo.FileReadWriter<T>): void {
+    function saveXmlFile<T>(sheetNum: string | number | null, writeFileData: (path: string, data: string) => void, data: T, writer: OpenXmlIo.FileReadWriter<T>): void {
         var path = XlsxFileType.getXmlFilePath(sheetNum, writer.fileInfo);
         var dataStr = writer.write(data);
         writeFileData(path, dataStr);

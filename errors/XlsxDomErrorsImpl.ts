@@ -6,8 +6,13 @@ module XlsxDomErrorsImpl {
     var typeCheck: DomValidate = XlsxDomErrorsImpl; // TODO type-checker
 
 
-    export function missingNode(nodeName: string) {
-        return new Error("Error reading XLSX template, missing required '" + nodeName + "' node");
+    export function missingNode(nodeName: string, parent?: any | null): Error {
+        return new Error("Error reading XLSX, missing required node '" + nodeName + "'");
+    }
+
+
+    export function missingAttribute(attributeName: string, parent?: any | null): Error {
+        return new Error("Error reading XLSX, missing required attribute '" + attributeName + "'");
     }
 
 
@@ -18,8 +23,8 @@ module XlsxDomErrorsImpl {
     }
 
 
-    export function unexpectedNode(badNodeName: string, expectedNodeName?: string, parentNodeName?: string, idx?: number, size?: number) {
-        return new Error("Error reading XLSX template, unexpected '" + badNodeName + "' node" +
+    export function unexpectedNode(badNodeName: string, expectedNodeName?: string, parentNodeName?: string, idx?: number, size?: number): Error {
+        return new Error("Error reading XLSXtemplate, unexpected node '" + badNodeName + "'" +
             (expectedNodeName ? ", expected only '" + expectedNodeName + "' nodes" : "") +
             (parentNodeName ? ", of parent node '" + parentNodeName + "'" : "") +
             (idx || size ? (idx ? ", index=" + idx : "") + (size ? ", size=" + size : "") : "")
