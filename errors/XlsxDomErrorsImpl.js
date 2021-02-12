@@ -21,7 +21,7 @@ var XlsxDomErrorsImpl;
     }
     XlsxDomErrorsImpl.expectNode = expectNode;
     function unexpectedNode(badNodeName, expectedNodeName, parentNodeName, idx, size) {
-        return new Error("Error reading XLSXtemplate, unexpected node '" + badNodeName + "'" +
+        return new Error("Error reading XLSX template, unexpected node '" + badNodeName + "'" +
             (expectedNodeName ? ", expected only '" + expectedNodeName + "' nodes" : "") +
             (parentNodeName ? ", of parent node '" + parentNodeName + "'" : "") +
             (idx || size ? (idx ? ", index=" + idx : "") + (size ? ", size=" + size : "") : ""));

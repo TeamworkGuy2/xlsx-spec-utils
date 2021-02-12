@@ -24,7 +24,7 @@ module XlsxDomErrorsImpl {
 
 
     export function unexpectedNode(badNodeName: string, expectedNodeName?: string, parentNodeName?: string, idx?: number, size?: number): Error {
-        return new Error("Error reading XLSXtemplate, unexpected node '" + badNodeName + "'" +
+        return new Error("Error reading XLSX template, unexpected node '" + badNodeName + "'" +
             (expectedNodeName ? ", expected only '" + expectedNodeName + "' nodes" : "") +
             (parentNodeName ? ", of parent node '" + parentNodeName + "'" : "") +
             (idx || size ? (idx ? ", index=" + idx : "") + (size ? ", size=" + size : "") : "")

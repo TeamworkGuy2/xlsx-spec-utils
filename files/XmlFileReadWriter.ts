@@ -71,7 +71,7 @@ class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
         var elem = this.rootReadWriter.write(xmlDoc, data);
 
         var elemDom = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
-        xmlDoc.addChilds(elemDom, elem.childNodes);
+        xmlDoc.addChilds(elemDom, xmlDoc.getChildNodes(elem));
 
         return xmlDoc.dom;
     }

@@ -4,10 +4,18 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.5.0](N/A) - 2021-01-01
+### [0.5.1](N/A) - 2021-02-12
+#### Fixed
+* `XmlFileReadWriter.saveToDom()` regression error introduced in `0.5.0`
+* Fix an error message typo
+
+
+--------
+### [0.5.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/820c4c6c33338ea023b6428d9abf352273391823) - 2021-01-01
+#### Change
 * TypeScript - enable `strict` compilation
   * Fix compile errors related to `strict`
-* Update dependency `dom-builder@0.9.0`
+* Update dependency `dom-builder@0.9.0` (API refactor and better attribute reading/writing) and `xlsx-spec-models@0.6.0`
 
 
 --------
