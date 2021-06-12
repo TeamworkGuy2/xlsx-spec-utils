@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.5.1](N/A) - 2021-02-12
+### [0.6.0](N/A) - 2021-06-12
+#### Changed
+* Update to TypeScript 4.3
+
+
+--------
+### [0.5.1](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/1b330bf037aa68e6cca45b3aa8f5b4ff69a5dfb4) - 2021-02-12
 #### Fixed
 * `XmlFileReadWriter.saveToDom()` regression error introduced in `0.5.0`
 * Fix an error message typo
