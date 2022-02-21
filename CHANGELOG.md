@@ -4,7 +4,13 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
-### [0.7.0](N/A) - 2022-01-03
+### [0.7.1](N/A) - 2022-02-21
+#### Changed
+* package.json dependency update to use npm version of `xlsx-spec-models@0.8.2` instead of github release tarball
+
+
+--------
+### [0.7.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/commit/f27f2d1eb02e4e42786056476c28063642e29f4a) - 2022-01-03
 #### Changed
 * Update to TypeScript 4.4
 
