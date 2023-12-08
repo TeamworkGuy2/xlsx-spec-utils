@@ -9,7 +9,7 @@ class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
     public fileInfo: OpenXmlIo.XlsxFileType;
     private prepForWrite: (xmlDoc: OpenXmlIo.WriterContext, inst: T) => void;
     private rootReadWriter: OpenXmlIo.ReadWrite<T>;
-    private lastReadXmlDoc: XmlFileInst.XmlDocFile;
+    private lastReadXmlDoc: XmlFileInst.XmlDocFile | undefined;
 
 
     /** Create an XML file reader/writer
@@ -67,6 +67,9 @@ class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
      */
     public saveToDom(data: T): Document {
         var xmlDoc = this.lastReadXmlDoc;
+        if (xmlDoc == null) {
+            throw new Error("Must call loadFromDom() before saveToDom()");
+        }
         this.prepForWrite(xmlDoc, data);
         var elem = this.rootReadWriter.write(xmlDoc, data);
 

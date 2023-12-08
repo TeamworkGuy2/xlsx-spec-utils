@@ -52,6 +52,9 @@ var XmlFileReadWriter = /** @class */ (function () {
      */
     XmlFileReadWriter.prototype.saveToDom = function (data) {
         var xmlDoc = this.lastReadXmlDoc;
+        if (xmlDoc == null) {
+            throw new Error("Must call loadFromDom() before saveToDom()");
+        }
         this.prepForWrite(xmlDoc, data);
         var elem = this.rootReadWriter.write(xmlDoc, data);
         var elemDom = xmlDoc.dom.childNodes[0];
