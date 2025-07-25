@@ -4,6 +4,12 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
+### [0.8.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v0.8.0) - 2024-01-05
+#### Changed
+* Update to TypeScript 4.9
+
+
+--------
 ### [0.7.2](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v0.7.2) - 2023-12-07
 #### Changed
 * Build: Enable TypeScript `strict` compile option

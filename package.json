@@ -10,8 +10,8 @@
     "url": "https://github.com/TeamworkGuy2/xlsx-spec-utils.git"
   },
   "dependencies": {
-    "@twg2/dom-builder": "~0.11.0",
-    "xlsx-spec-models": "~0.8.3"
+    "@twg2/dom-builder": "^0.11.0",
+    "xlsx-spec-models": "^0.8.3"
   },
   "devDependencies": {
     "@types/chai": "~4.2.4",
@@ -19,7 +19,7 @@
     "@types/node": "^12.0.0",
     "chai": "~4.2.0",
     "mocha": "~5.2.0",
-    "typescript": "~4.4.4"
+    "typescript": "~4.9.5"
   },
   "scripts": {
     "test": "node node_modules/mocha/bin/_mocha -u tdd --recursive",
