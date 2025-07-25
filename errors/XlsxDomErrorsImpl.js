@@ -1,4 +1,6 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.XlsxDomErrorsImpl = void 0;
 /** Common XLSX XML file DOM error checking/throwing functions
  * @author TeamworkGuy2
  * @since 2016-5-27
@@ -27,5 +29,4 @@ var XlsxDomErrorsImpl;
             (idx || size ? (idx ? ", index=" + idx : "") + (size ? ", size=" + size : "") : ""));
     }
     XlsxDomErrorsImpl.unexpectedNode = unexpectedNode;
-})(XlsxDomErrorsImpl || (XlsxDomErrorsImpl = {}));
-module.exports = XlsxDomErrorsImpl;
+})(XlsxDomErrorsImpl = exports.XlsxDomErrorsImpl || (exports.XlsxDomErrorsImpl = {}));

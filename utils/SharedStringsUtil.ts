@@ -1,9 +1,9 @@
-﻿import SharedStringTable = require("../../xlsx-spec-models/root-types/SharedStringTable");
+﻿import { SharedStringItem } from "xlsx-spec-models/root-types/SharedStringTable";
 
 /** Functions for working with 'OpenXml.SharedStringTable'.  Find, add, and overwrite workbook shared strings.
  * @since 2016-3-31
  */
-module SharedStringsUtil {
+export module SharedStringsUtil {
 
     /** Try to find a shared string matching the given parameters, return the shared string's index if found, -1 if no match
      */
@@ -43,7 +43,7 @@ module SharedStringsUtil {
 
 
     export function addSharedString(sharedStrings: OpenXml.SharedStringTable, sharedStrItem: OpenXml.SharedStringItem, copy: boolean = true) {
-        sharedStrItem = copy ? SharedStringTable.SharedStringItem.copy(sharedStrItem) : sharedStrItem;
+        sharedStrItem = copy ? SharedStringItem.copy(sharedStrItem) : sharedStrItem;
         sharedStrings.sis.push(sharedStrItem);
         return sharedStrings.sis.length - 1;
     }
@@ -121,5 +121,3 @@ module SharedStringsUtil {
     }
 
 }
-
-export = SharedStringsUtil;

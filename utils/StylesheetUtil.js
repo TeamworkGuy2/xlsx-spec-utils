@@ -1,4 +1,6 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.StylesheetUtil = void 0;
 /** Static functions for finding/creating cell formats, fonts, borders, and other Stylesheet part Open XML elements
  */
 var StylesheetUtil;
@@ -291,5 +293,4 @@ var StylesheetUtil;
         };
     }
     StylesheetUtil._createBorder = _createBorder;
-})(StylesheetUtil || (StylesheetUtil = {}));
-module.exports = StylesheetUtil;
+})(StylesheetUtil = exports.StylesheetUtil || (exports.StylesheetUtil = {}));

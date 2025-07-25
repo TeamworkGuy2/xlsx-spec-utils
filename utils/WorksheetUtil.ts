@@ -1,12 +1,13 @@
-﻿import CellRefUtil = require("./CellRefUtil");
-import CellValues = require("../../xlsx-spec-models/enums/CellValues");
-import SharedStringsUtil = require("./SharedStringsUtil");
+﻿import { CellValues } from "xlsx-spec-models/enums/CellValues";
+import { CellRefUtil } from "./CellRefUtil";
+import { SharedStringsUtil } from "./SharedStringsUtil";
 
 /**
  * @author TeamworkGuy2
  * @since 2016-5-28
  */
-module WorksheetUtil {
+export module WorksheetUtil {
+    export let DEFAULT_DY_DESCENT = 0.2;
 
     export interface SimpleCellData {
         val?: string | number | null;
@@ -33,7 +34,7 @@ module WorksheetUtil {
 
 
     // TODO support more complex cells
-    export function addPlainRow(worksheet: OpenXml.Worksheet, columnVals: (string | number)[], dyDescent: number): OpenXml.Row | null {
+    export function addPlainRow(worksheet: OpenXml.Worksheet, columnVals: (string | number)[], dyDescent = DEFAULT_DY_DESCENT): OpenXml.Row | null {
         var res: SimpleCellData[] = [];
 
         for (var i = 0, size = columnVals.length; i < size; i++) {
@@ -491,5 +492,3 @@ module WorksheetUtil {
     }
 
 }
-
-export = WorksheetUtil;

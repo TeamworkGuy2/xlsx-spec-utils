@@ -1,10 +1,10 @@
-﻿import XlsxFileType = require("../files/XlsxFileType");
+﻿import { XlsxFileType } from "../files/XlsxFileType";
 
 /** Utilities for working with ".rels" files
  * @author TeamworkGuy2
  * @since 2017-07-02
  */
-module RelationshipsUtil {
+export module RelationshipsUtil {
     var _id = 0;
 
 
@@ -27,5 +27,3 @@ module RelationshipsUtil {
     }
 
 }
-
-export = RelationshipsUtil;

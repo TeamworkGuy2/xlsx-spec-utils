@@ -4,6 +4,15 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
+### [1.0.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.0.0) - 2025-07-25
+#### Changed
+Time to mark this package stable and v1!
+
+* BREAKING: update exports to use standard named exports rather than a default export object. This requires updating import statements from `import XlsxReaderWriter from 'xlsx-spec-utils/XlsxReaderWriter';` to `import { XlsxReaderWriter } from 'xlsx-spec-utils/XlsxReaderWriter';`, notice the parenthesis now required around the import type.
+* Update dependency `xlsx-spec-models` to `v1.0.0`
+
+
+--------
 ### [0.8.1](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v0.8.1) - 2025-07-25
 #### Fixed
 * `package.json` version

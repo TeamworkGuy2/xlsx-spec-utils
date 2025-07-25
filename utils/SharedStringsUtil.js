@@ -1,5 +1,7 @@
 "use strict";
-var SharedStringTable = require("../../xlsx-spec-models/root-types/SharedStringTable");
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SharedStringsUtil = void 0;
+var SharedStringTable_1 = require("xlsx-spec-models/root-types/SharedStringTable");
 /** Functions for working with 'OpenXml.SharedStringTable'.  Find, add, and overwrite workbook shared strings.
  * @since 2016-3-31
  */
@@ -41,7 +43,7 @@ var SharedStringsUtil;
     SharedStringsUtil.findOrCreateSharedString = findOrCreateSharedString;
     function addSharedString(sharedStrings, sharedStrItem, copy) {
         if (copy === void 0) { copy = true; }
-        sharedStrItem = copy ? SharedStringTable.SharedStringItem.copy(sharedStrItem) : sharedStrItem;
+        sharedStrItem = copy ? SharedStringTable_1.SharedStringItem.copy(sharedStrItem) : sharedStrItem;
         sharedStrings.sis.push(sharedStrItem);
         return sharedStrings.sis.length - 1;
     }
@@ -112,5 +114,4 @@ var SharedStringsUtil;
         }
     }
     SharedStringsUtil.extractText = extractText;
-})(SharedStringsUtil || (SharedStringsUtil = {}));
-module.exports = SharedStringsUtil;
+})(SharedStringsUtil = exports.SharedStringsUtil || (exports.SharedStringsUtil = {}));

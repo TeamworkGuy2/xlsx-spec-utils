@@ -1,6 +1,6 @@
 ﻿import DomBuilderFactory = require("@twg2/dom-builder/dom/DomBuilderFactory");
 import DomBuilderHelper = require("@twg2/dom-builder/dom/DomBuilderHelper");
-import XlsxDomErrorsImpl = require("../errors/XlsxDomErrorsImpl");
+import { XlsxDomErrorsImpl } from "../errors/XlsxDomErrorsImpl";
 
 /** Implementation of OpenXmlIo.ParsedFile, contains:
  * - An XMLDocument containing the file data
@@ -10,7 +10,7 @@ import XlsxDomErrorsImpl = require("../errors/XlsxDomErrorsImpl");
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
-module XmlFileInst {
+export module XmlFileInst {
 
     export class DocLikeFile extends DomBuilderHelper implements OpenXmlIo.ReaderContext, OpenXmlIo.WriterContext {
         /** this XML file's parsed DOM */
@@ -102,5 +102,3 @@ module XmlFileInst {
     }
 
 }
-
-export = XmlFileInst;

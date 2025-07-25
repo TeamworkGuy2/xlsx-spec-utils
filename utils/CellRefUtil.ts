@@ -2,7 +2,7 @@
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
-module CellRefUtil {
+export module CellRefUtil {
     var columnNames = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
     var charCodeA = "A".charCodeAt(0);
     var charCode0 = "0".charCodeAt(0);
@@ -109,5 +109,3 @@ module CellRefUtil {
     }
 
 }
-
-export = CellRefUtil;

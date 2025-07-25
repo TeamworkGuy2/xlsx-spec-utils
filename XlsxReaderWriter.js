@@ -1,18 +1,20 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.XlsxReaderWriter = void 0;
 /// <reference path="../xlsx-spec-models/open-xml.d.ts" />
 /// <reference path="../xlsx-spec-models/open-xml-io.d.ts" />
-var XmlFileReadWriter = require("./files/XmlFileReadWriter");
-var XlsxFileType = require("./files/XlsxFileType");
-var WorksheetUtil = require("./utils/WorksheetUtil");
-var CalcChain = require("../xlsx-spec-models/root-types/CalcChain");
-var Comments = require("../xlsx-spec-models/root-types/Comments");
-var ContentTypes = require("../xlsx-spec-models/root-types/ContentTypes");
-var Relationships = require("../xlsx-spec-models/root-types/Relationships");
-var SharedStringTable = require("../xlsx-spec-models/root-types/SharedStringTable");
-var Stylesheet = require("../xlsx-spec-models/root-types/Stylesheet");
-var Workbook = require("../xlsx-spec-models/root-types/Workbook");
-var Worksheet = require("../xlsx-spec-models/root-types/Worksheet");
-var WorksheetDrawing = require("../xlsx-spec-models/root-types/WorksheetDrawing");
+var CalcChain_1 = require("xlsx-spec-models/root-types/CalcChain");
+var Comments_1 = require("xlsx-spec-models/root-types/Comments");
+var ContentTypes_1 = require("xlsx-spec-models/root-types/ContentTypes");
+var Relationships_1 = require("xlsx-spec-models/root-types/Relationships");
+var SharedStringTable_1 = require("xlsx-spec-models/root-types/SharedStringTable");
+var Stylesheet_1 = require("xlsx-spec-models/root-types/Stylesheet");
+var Workbook_1 = require("xlsx-spec-models/root-types/Workbook");
+var Worksheet_1 = require("xlsx-spec-models/root-types/Worksheet");
+var WorksheetDrawing_1 = require("xlsx-spec-models/root-types/WorksheetDrawing");
+var XmlFileReadWriter_1 = require("./files/XmlFileReadWriter");
+var XlsxFileType_1 = require("./files/XlsxFileType");
+var WorksheetUtil_1 = require("./utils/WorksheetUtil");
 /**
  * @author TeamworkGuy2
  * @since 2016-5-27
@@ -22,35 +24,35 @@ var XlsxReaderWriter;
     XlsxReaderWriter.RootNamespaceUrl = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
     // XML namespaces and flags for the various sub files inside a zipped Open XML Spreadsheet file
     XlsxReaderWriter.XlsxFileTypes = {
-        App: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties", "application/vnd.openxmlformats-officedocument.extended-properties+xml", "docProps/app.xml", "docProps/app.xml", false, null),
-        CalcChain: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/calcChain", "application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml", "calcChain.xml", "xl/calcChain.xml", false, null),
-        Comments: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments", "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml", "../comments#.xml", "xl/comments#.xml", true, "#"),
-        ContentTypes: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/content-types", "application/vnd.openxmlformats-package.content-types+xml", "[Content_Types].xml", "[Content_Types].xml", false, "#"),
-        Core: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties", "application/vnd.openxmlformats-package.core-properties+xml", "docProps/core.xml", "docProps/core.xml", false, null),
-        Custom: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties", "application/vnd.openxmlformats-officedocument.custom-properties+xml", "docProps/custom.xml", "docProps/custom.xml", false, null),
-        Drawing: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing", "application/vnd.openxmlformats-officedocument.drawing+xml", "../drawings/drawing#.xml", "xl/drawings/drawing#.xml", true, "#"),
-        ItemProps: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXmlProps", "application/vnd.openxmlformats-officedocument.customXmlProperties+xml", "itemProps#.xml", "customXml/itemProps#.xml", true, "#"),
-        Rels: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "_rels/.rels", "_rels/.rels", false, "#"),
-        SharedStrings: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings", "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml", "sharedStrings.xml", "xl/sharedStrings.xml", false, null),
-        Styles: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles", "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml", "styles.xml", "xl/styles.xml", false, null),
-        Theme: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme", "application/vnd.openxmlformats-officedocument.theme+xml", "theme/theme#.xml", "xl/theme/theme#.xml", true, "#"),
-        Workbook: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml", "xl/workbook.xml", "xl/workbook.xml", false, null),
-        WorkbookRels: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "xl/_rels/workbook.xml.rels", "xl/_rels/workbook.xml.rels", false, "#"),
-        Worksheet: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml", "worksheets/sheet#.xml", "xl/worksheets/sheet#.xml", true, "#"),
-        WorksheetRels: new XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "xl/worksheets/_rels/sheet#.xml.rels", "xl/worksheets/_rels/sheet#.xml.rels", true, "#"),
+        App: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties", "application/vnd.openxmlformats-officedocument.extended-properties+xml", "docProps/app.xml", "docProps/app.xml", false, null),
+        CalcChain: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/calcChain", "application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml", "calcChain.xml", "xl/calcChain.xml", false, null),
+        Comments: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments", "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml", "../comments#.xml", "xl/comments#.xml", true, "#"),
+        ContentTypes: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/package/2006/content-types", "application/vnd.openxmlformats-package.content-types+xml", "[Content_Types].xml", "[Content_Types].xml", false, "#"),
+        Core: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties", "application/vnd.openxmlformats-package.core-properties+xml", "docProps/core.xml", "docProps/core.xml", false, null),
+        Custom: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties", "application/vnd.openxmlformats-officedocument.custom-properties+xml", "docProps/custom.xml", "docProps/custom.xml", false, null),
+        Drawing: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing", "application/vnd.openxmlformats-officedocument.drawing+xml", "../drawings/drawing#.xml", "xl/drawings/drawing#.xml", true, "#"),
+        ItemProps: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXmlProps", "application/vnd.openxmlformats-officedocument.customXmlProperties+xml", "itemProps#.xml", "customXml/itemProps#.xml", true, "#"),
+        Rels: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "_rels/.rels", "_rels/.rels", false, "#"),
+        SharedStrings: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings", "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml", "sharedStrings.xml", "xl/sharedStrings.xml", false, null),
+        Styles: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles", "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml", "styles.xml", "xl/styles.xml", false, null),
+        Theme: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme", "application/vnd.openxmlformats-officedocument.theme+xml", "theme/theme#.xml", "xl/theme/theme#.xml", true, "#"),
+        Workbook: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml", "xl/workbook.xml", "xl/workbook.xml", false, null),
+        WorkbookRels: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "xl/_rels/workbook.xml.rels", "xl/_rels/workbook.xml.rels", false, "#"),
+        Worksheet: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml", "worksheets/sheet#.xml", "xl/worksheets/sheet#.xml", true, "#"),
+        WorksheetRels: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "xl/worksheets/_rels/sheet#.xml.rels", "xl/worksheets/_rels/sheet#.xml.rels", true, "#"),
     };
     XlsxReaderWriter.XlsxFiles = {
-        CalcChain: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.CalcChain, CalcChain.CalcChain, prepCalcChainForWrite),
-        Comments: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Comments, Comments.Comments, prepCommentsForWrite),
-        ContentTypes: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.ContentTypes, ContentTypes.ContentTypes, prepContentTypesForWrite),
-        Rels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Rels, Relationships.Relationships, prepRelsForWrite),
-        SharedStrings: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.SharedStrings, SharedStringTable.SharedStringTable, prepSharedStringsForWrite),
-        Styles: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Styles, Stylesheet.Stylesheet, prepStylesForWrite),
-        Workbook: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Workbook, Workbook.Workbook, prepWorkbookForWrite),
-        WorkbookRels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.WorkbookRels, Relationships.Relationships, prepRelsForWrite),
-        Worksheet: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Worksheet, Worksheet.Worksheet, prepWorksheetForWrite),
-        WorksheetRels: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.WorksheetRels, Relationships.Relationships, prepRelsForWrite),
-        WorksheetDrawing: new XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Drawing, WorksheetDrawing.WorksheetDrawing, prepDrawingsForWrite),
+        CalcChain: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.CalcChain, CalcChain_1.CalcChain, prepCalcChainForWrite),
+        Comments: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Comments, Comments_1.Comments, prepCommentsForWrite),
+        ContentTypes: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.ContentTypes, ContentTypes_1.ContentTypes, prepContentTypesForWrite),
+        Rels: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Rels, Relationships_1.Relationships, prepRelsForWrite),
+        SharedStrings: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.SharedStrings, SharedStringTable_1.SharedStringTable, prepSharedStringsForWrite),
+        Styles: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Styles, Stylesheet_1.Stylesheet, prepStylesForWrite),
+        Workbook: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Workbook, Workbook_1.Workbook, prepWorkbookForWrite),
+        WorkbookRels: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.WorkbookRels, Relationships_1.Relationships, prepRelsForWrite),
+        Worksheet: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Worksheet, Worksheet_1.Worksheet, prepWorksheetForWrite),
+        WorksheetRels: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.WorksheetRels, Relationships_1.Relationships, prepRelsForWrite),
+        WorksheetDrawing: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Drawing, WorksheetDrawing_1.WorksheetDrawing, prepDrawingsForWrite),
     };
     function readZip(data, jszip) {
         var firstByte = data[0];
@@ -99,7 +101,7 @@ var XlsxReaderWriter;
     function prepWorksheetForWrite(xmlDoc, inst) {
         var worksheet = xmlDoc.dom.childNodes[0];
         xmlDoc.removeChilds(worksheet);
-        WorksheetUtil.updateBounds(inst);
+        WorksheetUtil_1.WorksheetUtil.updateBounds(inst);
     }
     // ==== functions for reading/writing higher level ParsedXlsxFileInst objects to JSZip files ====
     function loadXlsxFile(loadSettings, readFileData) {
@@ -233,13 +235,13 @@ var XlsxReaderWriter;
         };
     }
     function loadXmlFile(sheetNum, readFileData, loader) {
-        var path = XlsxFileType.getXmlFilePath(sheetNum, loader.fileInfo);
+        var path = XlsxFileType_1.XlsxFileType.getXmlFilePath(sheetNum, loader.fileInfo);
         var data = readFileData(path);
         var inst = data != null ? loader.read(data) : null;
         return inst;
     }
     function saveXmlFile(sheetNum, writeFileData, data, writer) {
-        var path = XlsxFileType.getXmlFilePath(sheetNum, writer.fileInfo);
+        var path = XlsxFileType_1.XlsxFileType.getXmlFilePath(sheetNum, writer.fileInfo);
         var dataStr = writer.write(data);
         writeFileData(path, dataStr);
     }
@@ -279,5 +281,4 @@ var XlsxReaderWriter;
             }
         };
     }
-})(XlsxReaderWriter || (XlsxReaderWriter = {}));
-module.exports = XlsxReaderWriter;
+})(XlsxReaderWriter = exports.XlsxReaderWriter || (exports.XlsxReaderWriter = {}));

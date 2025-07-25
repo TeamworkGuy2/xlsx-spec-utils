@@ -1,13 +1,16 @@
 "use strict";
-var CellRefUtil = require("./CellRefUtil");
-var CellValues = require("../../xlsx-spec-models/enums/CellValues");
-var SharedStringsUtil = require("./SharedStringsUtil");
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WorksheetUtil = void 0;
+var CellValues_1 = require("xlsx-spec-models/enums/CellValues");
+var CellRefUtil_1 = require("./CellRefUtil");
+var SharedStringsUtil_1 = require("./SharedStringsUtil");
 /**
  * @author TeamworkGuy2
  * @since 2016-5-28
  */
 var WorksheetUtil;
 (function (WorksheetUtil) {
+    WorksheetUtil.DEFAULT_DY_DESCENT = 0.2;
     function addCalcChainRef(calcChain, sheetId, colRowName, childChain, newDependencyLevel) {
         calcChain.cs.push({
             i: sheetId,
@@ -20,12 +23,13 @@ var WorksheetUtil;
     // TODO support more complex cells
     function addPlainRow(worksheet, columnVals, dyDescent) {
         var _a;
+        if (dyDescent === void 0) { dyDescent = WorksheetUtil.DEFAULT_DY_DESCENT; }
         var res = [];
         for (var i = 0, size = columnVals.length; i < size; i++) {
             var cellVal = columnVals[i];
             res.push({
                 val: cellVal != null ? String(cellVal) : null,
-                cellType: (_a = getCellValueType(cellVal)) !== null && _a !== void 0 ? _a : CellValues.Error,
+                cellType: (_a = getCellValueType(cellVal)) !== null && _a !== void 0 ? _a : CellValues_1.CellValues.Error,
                 isFormula: isFormulaString(cellVal),
             });
         }
@@ -59,7 +63,7 @@ var WorksheetUtil;
         var newRow = {
             cs: cells,
             r: rowNum,
-            spans: CellRefUtil.createCellSpans(columnOffset, cells.length),
+            spans: CellRefUtil_1.CellRefUtil.createCellSpans(columnOffset, cells.length),
             dyDescent: dyDescent,
         };
         // add the new row to the spreadsheet
@@ -73,7 +77,7 @@ var WorksheetUtil;
      * @param cellData the simple data used to create an 'OpenXml.Cell' object
      */
     function createCell(rowNum, columnIdx, cellData) {
-        var col = CellRefUtil.columnIndexToName(columnIdx);
+        var col = CellRefUtil_1.CellRefUtil.columnIndexToName(columnIdx);
         var cell;
         // allow null cells
         if (cellData == null) {
@@ -87,7 +91,7 @@ var WorksheetUtil;
         }
         else {
             var cellType = cellData.cellType != null ? cellData.cellType.xmlValue : null;
-            var isInlineStr = cellType == CellValues.InlineString.xmlValue;
+            var isInlineStr = cellType == CellValues_1.CellValues.InlineString.xmlValue;
             cell = {
                 f: createCellSimpleFormula(cellData),
                 is: isInlineStr && cellData.vals != null ? { rs: WorksheetUtil._simpleCellDataToRichTextRuns(cellData.vals) } : null,
@@ -118,7 +122,7 @@ var WorksheetUtil;
     }
     WorksheetUtil.mergeCell = mergeCell;
     function _mergeOrSetCell(worksheet, sharedStrings, dyDescent, cellRef, cellVal, mergeIfExisting, overwriteSharedStrings) {
-        var _a = CellRefUtil.parseCellRef(cellRef), col = _a.col, row = _a.row;
+        var _a = CellRefUtil_1.CellRefUtil.parseCellRef(cellRef), col = _a.col, row = _a.row;
         var rowIdx = getRowIndex(worksheet.sheetData.rows, row);
         if (rowIdx > -1) {
             var rowData = worksheet.sheetData.rows[rowIdx];
@@ -160,7 +164,7 @@ var WorksheetUtil;
      */
     function getCellIndex(cells, cellIdx) {
         for (var i = 0, size = cells.length; i < size; i++) {
-            var otherIdx = CellRefUtil.parseCellRefColumn(cells[i].r);
+            var otherIdx = CellRefUtil_1.CellRefUtil.parseCellRefColumn(cells[i].r);
             if (otherIdx == cellIdx) {
                 return i;
             }
@@ -181,20 +185,20 @@ var WorksheetUtil;
     function getCellValueType(val) {
         var type = typeof val;
         if (type === "string") {
-            return CellValues.String;
+            return CellValues_1.CellValues.String;
         }
         else if (type === "number") {
-            return CellValues.Number;
+            return CellValues_1.CellValues.Number;
         }
         else if (type === "boolean") {
-            return CellValues.Boolean;
+            return CellValues_1.CellValues.Boolean;
         }
         else if (type === "object") {
             if (val != null && typeof val.getTime === "function") {
-                return CellValues.Date;
+                return CellValues_1.CellValues.Date;
             }
         }
-        return val == null ? null : CellValues.Error;
+        return val == null ? null : CellValues_1.CellValues.Error;
     }
     WorksheetUtil.getCellValueType = getCellValueType;
     function createCellSimpleFormula(cell) {
@@ -211,8 +215,8 @@ var WorksheetUtil;
     function getLeastAndGreatestRef(rows) {
         var rowIdx = getLeastAndGreatestRowIndex(rows);
         var colIdx = getLeastAndGreatestColumnIndex(rows);
-        var min = (CellRefUtil.columnIndexToName(colIdx.min) || "A") + (rowIdx.min + 1);
-        var max = (CellRefUtil.columnIndexToName(colIdx.max) || "A") + (rowIdx.max + 1);
+        var min = (CellRefUtil_1.CellRefUtil.columnIndexToName(colIdx.min) || "A") + (rowIdx.min + 1);
+        var max = (CellRefUtil_1.CellRefUtil.columnIndexToName(colIdx.max) || "A") + (rowIdx.max + 1);
         return { min: min, max: max };
     }
     function getLeastAndGreatestRowIndex(rows) {
@@ -240,8 +244,8 @@ var WorksheetUtil;
             if (row && row.cs && row.cs.length > 0) {
                 var firstCell = row.cs[0];
                 var lastCell = row.cs[row.cs.length - 1];
-                var firstColumnIdx = CellRefUtil.parseCellRefColumn(firstCell.r);
-                var lastColumnIdx = CellRefUtil.parseCellRefColumn(lastCell.r);
+                var firstColumnIdx = CellRefUtil_1.CellRefUtil.parseCellRefColumn(firstCell.r);
+                var lastColumnIdx = CellRefUtil_1.CellRefUtil.parseCellRefColumn(lastCell.r);
                 if (firstColumnIdx < min) {
                     min = firstColumnIdx;
                 }
@@ -311,7 +315,7 @@ var WorksheetUtil;
      * @param allowOverwrite
      */
     function insertOrOverwriteCell(cells, newCell, allowOverwrite, allowMerge, overwriteSharedStrings, sharedStrings) {
-        var parseCol = CellRefUtil.parseCellRefColumn;
+        var parseCol = CellRefUtil_1.CellRefUtil.parseCellRefColumn;
         var cellIdx = parseCol(newCell.r);
         // if an existing cell has the same index, overwrite it (if allowed), return
         var findIdx = getCellIndex(cells, cellIdx);
@@ -417,19 +421,19 @@ var WorksheetUtil;
      */
     function _lookupAndOverwriteSharedStrings(sharedStrings, origCell, newCell) {
         // if the original cell used shared strings
-        if (origCell.v && CellValues.SharedString.xmlValue == origCell.t) {
+        if (origCell.v && CellValues_1.CellValues.SharedString.xmlValue == origCell.t) {
             var isInlineStr = false, isInvalidFormatStr = false;
             // if the new cell uses inline strings
-            if ((isInlineStr = (newCell.is != null && CellValues.InlineString.xmlValue == newCell.t)) || (isInvalidFormatStr = (newCell.v != null && CellValues.String.xmlValue == newCell.t))) {
+            if ((isInlineStr = (newCell.is != null && CellValues_1.CellValues.InlineString.xmlValue == newCell.t)) || (isInvalidFormatStr = (newCell.v != null && CellValues_1.CellValues.String.xmlValue == newCell.t))) {
                 var ssIdx = parseInt(origCell.v.content);
                 // overwrite the original shared string with the new inline string and use it instead
-                var strs = isInlineStr ? SharedStringsUtil.extractText(newCell.is /*because of 'isInlineStr'*/) : (isInvalidFormatStr ? [newCell.v /*because of 'isInvalidFormatStr'*/.content] : []);
-                SharedStringsUtil.setSharedString(sharedStrings, ssIdx, strs);
+                var strs = isInlineStr ? SharedStringsUtil_1.SharedStringsUtil.extractText(newCell.is /*because of 'isInlineStr'*/) : (isInvalidFormatStr ? [newCell.v /*because of 'isInvalidFormatStr'*/.content] : []);
+                SharedStringsUtil_1.SharedStringsUtil.setSharedString(sharedStrings, ssIdx, strs);
                 newCell.is = null;
                 newCell.v = {
                     content: ssIdx + ''
                 };
-                newCell.t = CellValues.SharedString.xmlValue;
+                newCell.t = CellValues_1.CellValues.SharedString.xmlValue;
             }
         }
     }
@@ -449,5 +453,4 @@ var WorksheetUtil;
         return res;
     }
     WorksheetUtil._simpleCellDataToRichTextRuns = _simpleCellDataToRichTextRuns;
-})(WorksheetUtil || (WorksheetUtil = {}));
-module.exports = WorksheetUtil;
+})(WorksheetUtil = exports.WorksheetUtil || (exports.WorksheetUtil = {}));

@@ -14,9 +14,11 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.XmlFileInst = void 0;
 var DomBuilderFactory = require("@twg2/dom-builder/dom/DomBuilderFactory");
 var DomBuilderHelper = require("@twg2/dom-builder/dom/DomBuilderHelper");
-var XlsxDomErrorsImpl = require("../errors/XlsxDomErrorsImpl");
+var XlsxDomErrorsImpl_1 = require("../errors/XlsxDomErrorsImpl");
 /** Implementation of OpenXmlIo.ParsedFile, contains:
  * - An XMLDocument containing the file data
  * - A DomBuilderFactory for creating new DOM elements when writing data back to the file
@@ -30,10 +32,10 @@ var XmlFileInst;
     var DocLikeFile = /** @class */ (function (_super) {
         __extends(DocLikeFile, _super);
         function DocLikeFile(dom) {
-            var _this = _super.call(this, dom, XlsxDomErrorsImpl) || this;
+            var _this = _super.call(this, dom, XlsxDomErrorsImpl_1.XlsxDomErrorsImpl) || this;
             _this.dom = dom;
             _this.domBldr = new DomBuilderFactory(dom);
-            _this.validator = XlsxDomErrorsImpl;
+            _this.validator = XlsxDomErrorsImpl_1.XlsxDomErrorsImpl;
             _this.readMulti = function (reader, elems, expectedElemName) { return XmlFileInst.readMulti(_this, reader, elems, expectedElemName); };
             _this.writeMulti = function (writer, insts, keysOrExpectedElemName) { return XmlFileInst.writeMulti(_this, writer, insts, keysOrExpectedElemName); };
             return _this;
@@ -44,10 +46,10 @@ var XmlFileInst;
     var XmlDocFile = /** @class */ (function (_super) {
         __extends(XmlDocFile, _super);
         function XmlDocFile(dom) {
-            var _this = _super.call(this, dom, XlsxDomErrorsImpl) || this;
+            var _this = _super.call(this, dom, XlsxDomErrorsImpl_1.XlsxDomErrorsImpl) || this;
             _this.dom = dom;
             _this.domBldr = new DomBuilderFactory(dom);
-            _this.validator = XlsxDomErrorsImpl;
+            _this.validator = XlsxDomErrorsImpl_1.XlsxDomErrorsImpl;
             _this.readMulti = function (reader, elems, expectedElemName) { return XmlFileInst.readMulti(_this, reader, elems, expectedElemName); };
             _this.writeMulti = function (writer, insts, keysOrExpectedElemName) { return XmlFileInst.writeMulti(_this, writer, insts, keysOrExpectedElemName); };
             return _this;
@@ -90,5 +92,4 @@ var XmlFileInst;
         return res;
     }
     XmlFileInst.writeMulti = writeMulti;
-})(XmlFileInst || (XmlFileInst = {}));
-module.exports = XmlFileInst;
+})(XmlFileInst = exports.XmlFileInst || (exports.XmlFileInst = {}));

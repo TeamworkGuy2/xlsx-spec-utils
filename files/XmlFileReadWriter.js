@@ -1,6 +1,8 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.XmlFileReadWriter = void 0;
 var DomBuilderHelper = require("@twg2/dom-builder/dom/DomBuilderHelper");
-var XmlFileInst = require("./XmlFileInst");
+var XmlFileInst_1 = require("./XmlFileInst");
 /** An OpenXmlIo FileReadWriter implementation with a configurable pre-write callback and a cache containing the last read()/loadFromDom() result
  * @author TeamworkGuy2
  * @since 2016-5-27
@@ -38,7 +40,7 @@ var XmlFileReadWriter = /** @class */ (function () {
      * @return the data object returned by rootReadWriter.read() given the 'dom' parameter
      */
     XmlFileReadWriter.prototype.loadFromDom = function (dom) {
-        var xmlDoc = XmlFileInst.newInst(dom);
+        var xmlDoc = XmlFileInst_1.XmlFileInst.newInst(dom);
         this.lastReadXmlDoc = xmlDoc;
         var domRoot = xmlDoc.dom.childNodes[0];
         return this.rootReadWriter.read(xmlDoc, domRoot);
@@ -76,4 +78,4 @@ var XmlFileReadWriter = /** @class */ (function () {
     };
     return XmlFileReadWriter;
 }());
-module.exports = XmlFileReadWriter;
+exports.XmlFileReadWriter = XmlFileReadWriter;

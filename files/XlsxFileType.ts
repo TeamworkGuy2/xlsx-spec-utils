@@ -3,7 +3,7 @@
  * @since 2016-5-27
  * @see OpenXmlIo.XlsxFileType
  */
-class XlsxFileTypeImpl implements OpenXmlIo.XlsxFileType {
+export class XlsxFileType implements OpenXmlIo.XlsxFileType {
     public schemaUrl: string;
     public schemaTarget: string;
     public contentType: string;
@@ -38,5 +38,3 @@ class XlsxFileTypeImpl implements OpenXmlIo.XlsxFileType {
     }
 
 }
-
-export = XlsxFileTypeImpl;

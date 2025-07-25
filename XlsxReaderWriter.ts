@@ -1,24 +1,23 @@
 ﻿/// <reference path="../xlsx-spec-models/open-xml.d.ts" />
 /// <reference path="../xlsx-spec-models/open-xml-io.d.ts" />
-
-import XmlFileReadWriter = require("./files/XmlFileReadWriter");
-import XlsxFileType = require("./files/XlsxFileType");
-import WorksheetUtil = require("./utils/WorksheetUtil");
-import CalcChain = require("../xlsx-spec-models/root-types/CalcChain");
-import Comments = require("../xlsx-spec-models/root-types/Comments");
-import ContentTypes = require("../xlsx-spec-models/root-types/ContentTypes");
-import Relationships = require("../xlsx-spec-models/root-types/Relationships");
-import SharedStringTable = require("../xlsx-spec-models/root-types/SharedStringTable");
-import Stylesheet = require("../xlsx-spec-models/root-types/Stylesheet");
-import Workbook = require("../xlsx-spec-models/root-types/Workbook");
-import Worksheet = require("../xlsx-spec-models/root-types/Worksheet");
-import WorksheetDrawing = require("../xlsx-spec-models/root-types/WorksheetDrawing");
+import { CalcChain } from "xlsx-spec-models/root-types/CalcChain";
+import { Comments } from "xlsx-spec-models/root-types/Comments";
+import { ContentTypes } from "xlsx-spec-models/root-types/ContentTypes";
+import { Relationships } from "xlsx-spec-models/root-types/Relationships";
+import { SharedStringTable } from "xlsx-spec-models/root-types/SharedStringTable";
+import { Stylesheet } from "xlsx-spec-models/root-types/Stylesheet";
+import { Workbook } from "xlsx-spec-models/root-types/Workbook";
+import { Worksheet } from "xlsx-spec-models/root-types/Worksheet";
+import { WorksheetDrawing } from "xlsx-spec-models/root-types/WorksheetDrawing";
+import { XmlFileReadWriter } from "./files/XmlFileReadWriter";
+import { XlsxFileType } from "./files/XlsxFileType";
+import { WorksheetUtil } from "./utils/WorksheetUtil";
 
 /**
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
-module XlsxReaderWriter {
+export module XlsxReaderWriter {
 
     export interface LoadSettings {
         sheetCount: number;
@@ -96,17 +95,17 @@ module XlsxReaderWriter {
 
 
     export var XlsxFiles = {
-        CalcChain: new XmlFileReadWriter(XlsxFileTypes.CalcChain, CalcChain.CalcChain, prepCalcChainForWrite),
-        Comments: new XmlFileReadWriter(XlsxFileTypes.Comments, Comments.Comments, prepCommentsForWrite),
-        ContentTypes: new XmlFileReadWriter(XlsxFileTypes.ContentTypes, ContentTypes.ContentTypes, prepContentTypesForWrite),
-        Rels: new XmlFileReadWriter(XlsxFileTypes.Rels, Relationships.Relationships, prepRelsForWrite),
-        SharedStrings: new XmlFileReadWriter(XlsxFileTypes.SharedStrings, SharedStringTable.SharedStringTable, prepSharedStringsForWrite),
-        Styles: new XmlFileReadWriter(XlsxFileTypes.Styles, Stylesheet.Stylesheet, prepStylesForWrite),
-        Workbook: new XmlFileReadWriter(XlsxFileTypes.Workbook, Workbook.Workbook, prepWorkbookForWrite),
-        WorkbookRels: new XmlFileReadWriter(XlsxFileTypes.WorkbookRels, Relationships.Relationships, prepRelsForWrite),
-        Worksheet: new XmlFileReadWriter(XlsxFileTypes.Worksheet, Worksheet.Worksheet, prepWorksheetForWrite),
-        WorksheetRels: new XmlFileReadWriter(XlsxFileTypes.WorksheetRels, Relationships.Relationships, prepRelsForWrite),
-        WorksheetDrawing: new XmlFileReadWriter(XlsxFileTypes.Drawing, WorksheetDrawing.WorksheetDrawing, prepDrawingsForWrite),
+        CalcChain: new XmlFileReadWriter(XlsxFileTypes.CalcChain, CalcChain, prepCalcChainForWrite),
+        Comments: new XmlFileReadWriter(XlsxFileTypes.Comments, Comments, prepCommentsForWrite),
+        ContentTypes: new XmlFileReadWriter(XlsxFileTypes.ContentTypes, ContentTypes, prepContentTypesForWrite),
+        Rels: new XmlFileReadWriter(XlsxFileTypes.Rels, Relationships, prepRelsForWrite),
+        SharedStrings: new XmlFileReadWriter(XlsxFileTypes.SharedStrings, SharedStringTable, prepSharedStringsForWrite),
+        Styles: new XmlFileReadWriter(XlsxFileTypes.Styles, Stylesheet, prepStylesForWrite),
+        Workbook: new XmlFileReadWriter(XlsxFileTypes.Workbook, Workbook, prepWorkbookForWrite),
+        WorkbookRels: new XmlFileReadWriter(XlsxFileTypes.WorkbookRels, Relationships, prepRelsForWrite),
+        Worksheet: new XmlFileReadWriter(XlsxFileTypes.Worksheet, Worksheet, prepWorksheetForWrite),
+        WorksheetRels: new XmlFileReadWriter(XlsxFileTypes.WorksheetRels, Relationships, prepRelsForWrite),
+        WorksheetDrawing: new XmlFileReadWriter(XlsxFileTypes.Drawing, WorksheetDrawing, prepDrawingsForWrite),
     };
 
 
@@ -356,5 +355,3 @@ module XlsxReaderWriter {
         };
     }
 }
-
-export = XlsxReaderWriter;

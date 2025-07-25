@@ -1,5 +1,7 @@
 "use strict";
-var XlsxFileType = require("../files/XlsxFileType");
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RelationshipsUtil = void 0;
+var XlsxFileType_1 = require("../files/XlsxFileType");
 /** Utilities for working with ".rels" files
  * @author TeamworkGuy2
  * @since 2017-07-02
@@ -18,11 +20,10 @@ var RelationshipsUtil;
             relationships.push({
                 id: "rId" + (i + 1),
                 target: files[i].schemaUrl,
-                type: XlsxFileType.getXmlFilePath(sheetNum, files[i])
+                type: XlsxFileType_1.XlsxFileType.getXmlFilePath(sheetNum, files[i])
             });
         }
         return { relationships: relationships };
     }
     RelationshipsUtil.createBaseRels = createBaseRels;
-})(RelationshipsUtil || (RelationshipsUtil = {}));
-module.exports = RelationshipsUtil;
+})(RelationshipsUtil = exports.RelationshipsUtil || (exports.RelationshipsUtil = {}));

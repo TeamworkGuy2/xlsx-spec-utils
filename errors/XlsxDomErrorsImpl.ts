@@ -2,7 +2,7 @@
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
-module XlsxDomErrorsImpl {
+export module XlsxDomErrorsImpl {
     var typeCheck: DomValidate = XlsxDomErrorsImpl; // TODO type-checker
 
 
@@ -32,5 +32,3 @@ module XlsxDomErrorsImpl {
     }
 
 }
-
-export = XlsxDomErrorsImpl;

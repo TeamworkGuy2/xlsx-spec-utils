@@ -1,4 +1,6 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CellRefUtil = void 0;
 /** Utilities for working with cell references (i.e. 'A3' or 'BC26'), column names/indexes, and cell spans (i.e. '3:8' or 'C2:D6')
  * @author TeamworkGuy2
  * @since 2016-5-27
@@ -101,5 +103,4 @@ var CellRefUtil;
         return { spans: min + ":" + max, min: min, max: max }; // 1 based, inclusive
     }
     CellRefUtil.mergeCellSpans = mergeCellSpans;
-})(CellRefUtil || (CellRefUtil = {}));
-module.exports = CellRefUtil;
+})(CellRefUtil = exports.CellRefUtil || (exports.CellRefUtil = {}));

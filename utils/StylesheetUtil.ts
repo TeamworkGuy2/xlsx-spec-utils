@@ -1,6 +1,6 @@
 ﻿/** Static functions for finding/creating cell formats, fonts, borders, and other Stylesheet part Open XML elements
  */
-module StylesheetUtil {
+export module StylesheetUtil {
 
     interface SimpleBorderProperty {
         indexed?: number;
@@ -331,5 +331,3 @@ module StylesheetUtil {
     }
 
 }
-
-export = StylesheetUtil;
