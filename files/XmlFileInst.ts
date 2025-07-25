@@ -1,5 +1,5 @@
-﻿import DomBuilderFactory = require("@twg2/dom-builder/dom/DomBuilderFactory");
-import DomBuilderHelper = require("@twg2/dom-builder/dom/DomBuilderHelper");
+﻿import { DomBuilderFactory } from "@twg2/dom-builder/dom/DomBuilderFactory";
+import { DomBuilderHelper } from "@twg2/dom-builder/dom/DomBuilderHelper";
 import { XlsxDomErrorsImpl } from "../errors/XlsxDomErrorsImpl";
 
 /** Implementation of OpenXmlIo.ParsedFile, contains:
@@ -12,57 +12,36 @@ import { XlsxDomErrorsImpl } from "../errors/XlsxDomErrorsImpl";
  */
 export module XmlFileInst {
 
-    export class DocLikeFile extends DomBuilderHelper implements OpenXmlIo.ReaderContext, OpenXmlIo.WriterContext {
+    export class XmlDocFile<D extends DocumentLike = DocumentLike>
+        extends DomBuilderHelper
+        implements OpenXmlIo.ReaderContext, OpenXmlIo.WriterContext
+    {
         /** this XML file's parsed DOM */
-        public dom: DocumentLike;
+        public dom: D;
         /** a DOM builder for this XML document */
-        public domBldr: DomBuilderFactory<DocumentLike>;
+        public domBldr: DomBuilderFactory<D>;
         /** read/write XLSX DOM element utility functions */
         public readMulti: OpenXmlIo.ElementsReader;
         public writeMulti: OpenXmlIo.ElementsWriter;
         /** a validator for XLSX DOM elements */
         public validator: DomValidate;
 
-        constructor(dom: DocumentLike) {
+        constructor(dom: D) {
             super(dom, XlsxDomErrorsImpl);
             this.dom = dom;
             this.domBldr = new DomBuilderFactory(dom);
             this.validator = XlsxDomErrorsImpl;
             this.readMulti = <T>(reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName?: string): T[] => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
-            this.writeMulti = <T>(writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): ElementLike[] => XmlFileInst.writeMulti(this, writer, <{ [id: string]: T }>insts, <string[]>keysOrExpectedElemName);
+            this.writeMulti = <T>(writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): ElementLike[] => XmlFileInst.writeMulti(this, writer, insts, keysOrExpectedElemName);
         }
 
     }
 
 
-    export class XmlDocFile extends DomBuilderHelper implements OpenXmlIo.ReaderContext, OpenXmlIo.WriterContext {
-        /** this XML file's parsed DOM */
-        public dom: XMLDocument;
-        /** a DOM builder for this XML document */
-        public domBldr: DomBuilderFactory<XMLDocument>;
-        /** read/write XLSX DOM element utility functions */
-        public readMulti: OpenXmlIo.ElementsReader;
-        public writeMulti: OpenXmlIo.ElementsWriter;
-        /** a validator for XLSX DOM elements */
-        public validator: DomValidate;
-
-        constructor(dom: XMLDocument) {
-            super(dom, XlsxDomErrorsImpl);
-            this.dom = dom;
-            this.domBldr = new DomBuilderFactory(dom);
-            this.validator = XlsxDomErrorsImpl;
-            this.readMulti = <T>(reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName?: string): T[] => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
-            this.writeMulti = <T>(writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): ElementLike[] => XmlFileInst.writeMulti(this, writer, <{ [id: string]: T }>insts, <string[]>keysOrExpectedElemName);
-        }
-
-    }
-
-
-    export function newInst(dom: XMLDocument): XmlDocFile;
-    export function newInst<D extends DocumentLike>(dom: D): DocLikeFile;
+    export function newInst(dom: XMLDocument): XmlDocFile<XMLDocument>;
+    export function newInst<D extends DocumentLike>(dom: D): XmlDocFile<DocumentLike>;
     export function newInst<D extends DocumentLike>(dom: D) {
-        var inst = ((<any>dom).childNodes != null ? new XmlDocFile(<XMLDocument><any>dom) : new DocLikeFile(dom));
-        return inst;
+        return new XmlDocFile<D>(dom);
     }
 
 

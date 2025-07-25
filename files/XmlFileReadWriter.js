@@ -1,9 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.XmlFileReadWriter = void 0;
-var DomBuilderHelper = require("@twg2/dom-builder/dom/DomBuilderHelper");
+var DomBuilderHelper_1 = require("@twg2/dom-builder/dom/DomBuilderHelper");
 var XmlFileInst_1 = require("./XmlFileInst");
-/** An OpenXmlIo FileReadWriter implementation with a configurable pre-write callback and a cache containing the last read()/loadFromDom() result
+/**
+ * An OpenXmlIo {@link OpenXmlIo.FileReadWriter} implementation with a configurable pre-write callback and
+ * a cache containing the last read()/loadFromDom() result.
+ * Internally this uses {@link DomBuilderHelper}'s `getParser()` and `getSerializer()` to
+ * read and write XML.
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
@@ -67,13 +71,13 @@ var XmlFileReadWriter = /** @class */ (function () {
      * @param dom the DOM node to serialize
      */
     XmlFileReadWriter.domToXmlText = function (dom) {
-        return DomBuilderHelper.getSerializer().serializeToString(dom);
+        return DomBuilderHelper_1.DomBuilderHelper.getSerializer().serializeToString(dom);
     };
     /** Convert an XML string into a DOM document
      * @param xmlStr the XML string to parse
      */
     XmlFileReadWriter.xmlTextToDom = function (xmlStr) {
-        var dom = DomBuilderHelper.getParser().parseFromString(xmlStr, "application/xml");
+        var dom = DomBuilderHelper_1.DomBuilderHelper.getParser().parseFromString(xmlStr, "application/xml");
         return dom;
     };
     return XmlFileReadWriter;

@@ -22,7 +22,9 @@ var WorksheetUtil_1 = require("./utils/WorksheetUtil");
 var XlsxReaderWriter;
 (function (XlsxReaderWriter) {
     XlsxReaderWriter.RootNamespaceUrl = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
-    // XML namespaces and flags for the various sub files inside a zipped Open XML Spreadsheet file
+    /**
+     * XML namespaces and flags for the various sub files inside a zipped Open XML Spreadsheet file
+     */
     XlsxReaderWriter.XlsxFileTypes = {
         App: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties", "application/vnd.openxmlformats-officedocument.extended-properties+xml", "docProps/app.xml", "docProps/app.xml", false, null),
         CalcChain: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/calcChain", "application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml", "calcChain.xml", "xl/calcChain.xml", false, null),
@@ -41,6 +43,9 @@ var XlsxReaderWriter;
         Worksheet: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml", "worksheets/sheet#.xml", "xl/worksheets/sheet#.xml", true, "#"),
         WorksheetRels: new XlsxFileType_1.XlsxFileType("http://schemas.openxmlformats.org/package/2006/relationships", "application/vnd.openxmlformats-package.relationships+xml", "xl/worksheets/_rels/sheet#.xml.rels", "xl/worksheets/_rels/sheet#.xml.rels", true, "#"),
     };
+    /**
+     * {@link XmlFileReadWriter} instances for the {@link XlsxFileTypes} in an Open XML ('XLSX') spreadsheet.
+     */
     XlsxReaderWriter.XlsxFiles = {
         CalcChain: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.CalcChain, CalcChain_1.CalcChain, prepCalcChainForWrite),
         Comments: new XmlFileReadWriter_1.XmlFileReadWriter(XlsxReaderWriter.XlsxFileTypes.Comments, Comments_1.Comments, prepCommentsForWrite),
@@ -104,6 +109,13 @@ var XlsxReaderWriter;
         WorksheetUtil_1.WorksheetUtil.updateBounds(inst);
     }
     // ==== functions for reading/writing higher level ParsedXlsxFileInst objects to JSZip files ====
+    /**
+     * Load an XLSX spreadsheet from the 'readFileData' source function.
+     * This utilizes the {@link XlsxFiles}
+     * @param loadSettings settings to control loading, mostly flags to enable/disable loading portions of an XLSX spreadsheet
+     * @param readFileData function which takes a relative file name, such as 'xl/workbook.xml' and returns the XML content of that file as a string
+     * @returns object containing the parse contents of the XLSX spreadsheet, such as 'workbook', 'worksheets', and 'calcChain'
+     */
     function loadXlsxFile(loadSettings, readFileData) {
         // TODO load number of sheets from '[Content_Types].xml' or 'xl/workbook.xml', also need to add media/images/itemProps parsing
         var sheetNum = 1;

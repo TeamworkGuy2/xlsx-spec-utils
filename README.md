@@ -1,6 +1,8 @@
 TypeScript XLSX Model Utils
 ==============
 
+npm: [`xlsx-spec-utils`](https://www.npmjs.com/package/xlsx-spec-utils)
+
 TypeScript utilities for reading/writing OpenXML spreadsheet (XLSX) models from the [xlsx-spec-models](https://github.com/TeamworkGuy2/xlsx-spec-models) library.
 
 Includes:

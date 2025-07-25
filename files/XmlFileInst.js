@@ -16,8 +16,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.XmlFileInst = void 0;
-var DomBuilderFactory = require("@twg2/dom-builder/dom/DomBuilderFactory");
-var DomBuilderHelper = require("@twg2/dom-builder/dom/DomBuilderHelper");
+var DomBuilderFactory_1 = require("@twg2/dom-builder/dom/DomBuilderFactory");
+var DomBuilderHelper_1 = require("@twg2/dom-builder/dom/DomBuilderHelper");
 var XlsxDomErrorsImpl_1 = require("../errors/XlsxDomErrorsImpl");
 /** Implementation of OpenXmlIo.ParsedFile, contains:
  * - An XMLDocument containing the file data
@@ -29,37 +29,22 @@ var XlsxDomErrorsImpl_1 = require("../errors/XlsxDomErrorsImpl");
  */
 var XmlFileInst;
 (function (XmlFileInst) {
-    var DocLikeFile = /** @class */ (function (_super) {
-        __extends(DocLikeFile, _super);
-        function DocLikeFile(dom) {
-            var _this = _super.call(this, dom, XlsxDomErrorsImpl_1.XlsxDomErrorsImpl) || this;
-            _this.dom = dom;
-            _this.domBldr = new DomBuilderFactory(dom);
-            _this.validator = XlsxDomErrorsImpl_1.XlsxDomErrorsImpl;
-            _this.readMulti = function (reader, elems, expectedElemName) { return XmlFileInst.readMulti(_this, reader, elems, expectedElemName); };
-            _this.writeMulti = function (writer, insts, keysOrExpectedElemName) { return XmlFileInst.writeMulti(_this, writer, insts, keysOrExpectedElemName); };
-            return _this;
-        }
-        return DocLikeFile;
-    }(DomBuilderHelper));
-    XmlFileInst.DocLikeFile = DocLikeFile;
     var XmlDocFile = /** @class */ (function (_super) {
         __extends(XmlDocFile, _super);
         function XmlDocFile(dom) {
             var _this = _super.call(this, dom, XlsxDomErrorsImpl_1.XlsxDomErrorsImpl) || this;
             _this.dom = dom;
-            _this.domBldr = new DomBuilderFactory(dom);
+            _this.domBldr = new DomBuilderFactory_1.DomBuilderFactory(dom);
             _this.validator = XlsxDomErrorsImpl_1.XlsxDomErrorsImpl;
             _this.readMulti = function (reader, elems, expectedElemName) { return XmlFileInst.readMulti(_this, reader, elems, expectedElemName); };
             _this.writeMulti = function (writer, insts, keysOrExpectedElemName) { return XmlFileInst.writeMulti(_this, writer, insts, keysOrExpectedElemName); };
             return _this;
         }
         return XmlDocFile;
-    }(DomBuilderHelper));
+    }(DomBuilderHelper_1.DomBuilderHelper));
     XmlFileInst.XmlDocFile = XmlDocFile;
     function newInst(dom) {
-        var inst = (dom.childNodes != null ? new XmlDocFile(dom) : new DocLikeFile(dom));
-        return inst;
+        return new XmlDocFile(dom);
     }
     XmlFileInst.newInst = newInst;
     /** Provides generic logic for reading/writing an array of OpenXml elements using a reader/writer for a single element of the same type

@@ -4,7 +4,7 @@ exports.XlsxFileType = void 0;
 /** Information about an XLSX file
  * @author TeamworkGuy2
  * @since 2016-5-27
- * @see OpenXmlIo.XlsxFileType
+ * @see {@link OpenXmlIo.XlsxFileType}
  */
 var XlsxFileType = /** @class */ (function () {
     function XlsxFileType(schemaUrl, contentType, schemaTarget, xlsxFilePath, pathIsTemplate, pathTemplateToken) {

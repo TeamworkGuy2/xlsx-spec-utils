@@ -4,6 +4,12 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
+### [1.1.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.1.0) - 2025-07-25
+#### Changed
+* Update `@twg2/dom-builder` dependency to `v1.0.0`
+
+
+--------
 ### [1.0.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.0.0) - 2025-07-25
 #### Changed
 Time to mark this package stable and v1!

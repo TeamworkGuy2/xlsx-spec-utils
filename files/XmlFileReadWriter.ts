@@ -1,7 +1,11 @@
-﻿import DomBuilderHelper = require("@twg2/dom-builder/dom/DomBuilderHelper");
+﻿import { DomBuilderHelper} from "@twg2/dom-builder/dom/DomBuilderHelper";
 import { XmlFileInst } from "./XmlFileInst";
 
-/** An OpenXmlIo FileReadWriter implementation with a configurable pre-write callback and a cache containing the last read()/loadFromDom() result
+/**
+ * An OpenXmlIo {@link OpenXmlIo.FileReadWriter} implementation with a configurable pre-write callback and
+ * a cache containing the last read()/loadFromDom() result.
+ * Internally this uses {@link DomBuilderHelper}'s `getParser()` and `getSerializer()` to
+ * read and write XML.
  * @author TeamworkGuy2
  * @since 2016-5-27
  */
@@ -9,7 +13,7 @@ export class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
     public fileInfo: OpenXmlIo.XlsxFileType;
     private prepForWrite: (xmlDoc: OpenXmlIo.WriterContext, inst: T) => void;
     private rootReadWriter: OpenXmlIo.ReadWrite<T>;
-    private lastReadXmlDoc: XmlFileInst.XmlDocFile | undefined;
+    private lastReadXmlDoc: XmlFileInst.XmlDocFile<XMLDocument> | undefined;
 
 
     /** Create an XML file reader/writer

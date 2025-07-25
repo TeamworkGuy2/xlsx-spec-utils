@@ -57,7 +57,9 @@ export module XlsxReaderWriter {
 
     export var RootNamespaceUrl = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 
-    // XML namespaces and flags for the various sub files inside a zipped Open XML Spreadsheet file
+    /**
+     * XML namespaces and flags for the various sub files inside a zipped Open XML Spreadsheet file
+     */
     export var XlsxFileTypes = {
         App: new XlsxFileType("http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties", "application/vnd.openxmlformats-officedocument.extended-properties+xml",
             "docProps/app.xml", "docProps/app.xml", false, null),
@@ -94,6 +96,9 @@ export module XlsxReaderWriter {
     };
 
 
+    /**
+     * {@link XmlFileReadWriter} instances for the {@link XlsxFileTypes} in an Open XML ('XLSX') spreadsheet.
+     */
     export var XlsxFiles = {
         CalcChain: new XmlFileReadWriter(XlsxFileTypes.CalcChain, CalcChain, prepCalcChainForWrite),
         Comments: new XmlFileReadWriter(XlsxFileTypes.Comments, Comments, prepCommentsForWrite),
@@ -180,6 +185,13 @@ export module XlsxReaderWriter {
 
     // ==== functions for reading/writing higher level ParsedXlsxFileInst objects to JSZip files ====
 
+    /**
+     * Load an XLSX spreadsheet from the 'readFileData' source function.
+     * This utilizes the {@link XlsxFiles}
+     * @param loadSettings settings to control loading, mostly flags to enable/disable loading portions of an XLSX spreadsheet
+     * @param readFileData function which takes a relative file name, such as 'xl/workbook.xml' and returns the XML content of that file as a string
+     * @returns object containing the parse contents of the XLSX spreadsheet, such as 'workbook', 'worksheets', and 'calcChain'
+     */
     export function loadXlsxFile(loadSettings: LoadSettings, readFileData: (path: string) => string): ParsedXlsxFileInst {
         // TODO load number of sheets from '[Content_Types].xml' or 'xl/workbook.xml', also need to add media/images/itemProps parsing
         var sheetNum = 1;
