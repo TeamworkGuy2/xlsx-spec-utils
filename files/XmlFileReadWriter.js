@@ -4,7 +4,7 @@ exports.XmlFileReadWriter = void 0;
 var DomBuilderHelper_1 = require("@twg2/dom-builder/dom/DomBuilderHelper");
 var XmlFileInst_1 = require("./XmlFileInst");
 /**
- * An OpenXmlIo {@link OpenXmlIo.FileReadWriter} implementation with a configurable pre-write callback and
+ * An {@link OpenXmlIo.FileReadWriter} implementation with a configurable pre-write callback and
  * a cache containing the last read()/loadFromDom() result.
  * Internally this uses {@link DomBuilderHelper}'s `getParser()` and `getSerializer()` to
  * read and write XML.
@@ -44,7 +44,8 @@ var XmlFileReadWriter = /** @class */ (function () {
      * @return the data object returned by rootReadWriter.read() given the 'dom' parameter
      */
     XmlFileReadWriter.prototype.loadFromDom = function (dom) {
-        var xmlDoc = XmlFileInst_1.XmlFileInst.newInst(dom);
+        var ns = dom.lookupNamespaceURI('');
+        var xmlDoc = XmlFileInst_1.XmlFileInst.newInst(dom, ns);
         this.lastReadXmlDoc = xmlDoc;
         var domRoot = xmlDoc.dom.childNodes[0];
         return this.rootReadWriter.read(xmlDoc, domRoot);

@@ -4,6 +4,16 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
+### [1.2.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.2.0) - 2025-07-26
+#### Changed
+* Refactored `XmlFileInst` from a module with a nested `XmlDocFile` class to a class with static methods
+* `XmlFileInst.newInst()` now takes an optional `namespaceURI` parameter ans passes it to to the `domBldr` created
+
+#### Fixed
+* Update `@twg2/dom-builder` dependency to `v1.1.1` to fix namespace handling
+
+
+--------
 ### [1.1.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.1.0) - 2025-07-25
 #### Changed
 * Update `@twg2/dom-builder` dependency to `v1.0.0`

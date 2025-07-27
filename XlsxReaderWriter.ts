@@ -1,5 +1,6 @@
 ﻿/// <reference path="../xlsx-spec-models/open-xml.d.ts" />
 /// <reference path="../xlsx-spec-models/open-xml-io.d.ts" />
+
 import { CalcChain } from "xlsx-spec-models/root-types/CalcChain";
 import { Comments } from "xlsx-spec-models/root-types/Comments";
 import { ContentTypes } from "xlsx-spec-models/root-types/ContentTypes";
@@ -232,6 +233,12 @@ export module XlsxReaderWriter {
     }
 
 
+    /**
+     * Serialize and save an XLSX spreadsheet.
+     * @param data the XLSX spreadsheet to save
+     * @param writeFileData a callback function which is called for each file to be saved.
+     * The relative file path and string content of each file is passed to the callback.
+     */
     export function saveXlsxFile(data: ParsedXlsxFileInst, writeFileData: (path: string, data: string) => void) {
         // these 'files' are shared by all worksheets in a workbook
         if (data.rels != null) { saveXmlFile(null, writeFileData, data.rels, XlsxFiles.Rels); }
@@ -253,6 +260,21 @@ export module XlsxReaderWriter {
             if (worksheet.comments != null) { saveXmlFile(sheetNum, writeFileData, worksheet.comments, XlsxFiles.Comments); }
             saveXmlFile(sheetNum, writeFileData, worksheet.worksheet, XlsxFiles.Worksheet);
         }
+    }
+
+
+    function loadXmlFile<T>(sheetNum: string | number | null, readFileData: (path: string) => string, loader: OpenXmlIo.FileReadWriter<T>): T | null {
+        var path = XlsxFileType.getXmlFilePath(sheetNum, loader.fileInfo);
+        var data = readFileData(path);
+        var inst = data != null ? loader.read(data) : null;
+        return inst;
+    }
+
+
+    function saveXmlFile<T>(sheetNum: string | number | null, writeFileData: (path: string, data: string) => void, data: T, writer: OpenXmlIo.FileReadWriter<T>): void {
+        var path = XlsxFileType.getXmlFilePath(sheetNum, writer.fileInfo);
+        var dataStr = writer.write(data);
+        writeFileData(path, dataStr);
     }
 
 
@@ -312,21 +334,6 @@ export module XlsxReaderWriter {
             workbookRels,
             worksheets
         };
-    }
-
-
-    function loadXmlFile<T>(sheetNum: string | number | null, readFileData: (path: string) => string, loader: OpenXmlIo.FileReadWriter<T>): T | null {
-        var path = XlsxFileType.getXmlFilePath(sheetNum, loader.fileInfo);
-        var data = readFileData(path);
-        var inst = data != null ? loader.read(data) : null;
-        return inst;
-    }
-
-
-    function saveXmlFile<T>(sheetNum: string | number | null, writeFileData: (path: string, data: string) => void, data: T, writer: OpenXmlIo.FileReadWriter<T>): void {
-        var path = XlsxFileType.getXmlFilePath(sheetNum, writer.fileInfo);
-        var dataStr = writer.write(data);
-        writeFileData(path, dataStr);
     }
 
 

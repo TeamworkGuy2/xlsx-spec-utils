@@ -2,7 +2,7 @@
 import { XmlFileInst } from "./XmlFileInst";
 
 /**
- * An OpenXmlIo {@link OpenXmlIo.FileReadWriter} implementation with a configurable pre-write callback and
+ * An {@link OpenXmlIo.FileReadWriter} implementation with a configurable pre-write callback and
  * a cache containing the last read()/loadFromDom() result.
  * Internally this uses {@link DomBuilderHelper}'s `getParser()` and `getSerializer()` to
  * read and write XML.
@@ -13,7 +13,7 @@ export class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
     public fileInfo: OpenXmlIo.XlsxFileType;
     private prepForWrite: (xmlDoc: OpenXmlIo.WriterContext, inst: T) => void;
     private rootReadWriter: OpenXmlIo.ReadWrite<T>;
-    private lastReadXmlDoc: XmlFileInst.XmlDocFile<XMLDocument> | undefined;
+    private lastReadXmlDoc: XmlFileInst<XMLDocument> | undefined;
 
 
     /** Create an XML file reader/writer
@@ -54,7 +54,8 @@ export class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
      * @return the data object returned by rootReadWriter.read() given the 'dom' parameter
      */
     public loadFromDom(dom: Document): T {
-        var xmlDoc = XmlFileInst.newInst(dom);
+        const ns = dom.lookupNamespaceURI('');
+        var xmlDoc = XmlFileInst.newInst(dom, ns);
         this.lastReadXmlDoc = xmlDoc;
 
         var domRoot = <HTMLElement>xmlDoc.dom.childNodes[0];

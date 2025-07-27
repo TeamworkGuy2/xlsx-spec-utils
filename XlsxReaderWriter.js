@@ -1,8 +1,8 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.XlsxReaderWriter = void 0;
 /// <reference path="../xlsx-spec-models/open-xml.d.ts" />
 /// <reference path="../xlsx-spec-models/open-xml-io.d.ts" />
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.XlsxReaderWriter = void 0;
 var CalcChain_1 = require("xlsx-spec-models/root-types/CalcChain");
 var Comments_1 = require("xlsx-spec-models/root-types/Comments");
 var ContentTypes_1 = require("xlsx-spec-models/root-types/ContentTypes");
@@ -151,6 +151,12 @@ var XlsxReaderWriter;
         };
     }
     XlsxReaderWriter.loadXlsxFile = loadXlsxFile;
+    /**
+     * Serialize and save an XLSX spreadsheet.
+     * @param data the XLSX spreadsheet to save
+     * @param writeFileData a callback function which is called for each file to be saved.
+     * The relative file path and string content of each file is passed to the callback.
+     */
     function saveXlsxFile(data, writeFileData) {
         // these 'files' are shared by all worksheets in a workbook
         if (data.rels != null) {
@@ -190,6 +196,17 @@ var XlsxReaderWriter;
         }
     }
     XlsxReaderWriter.saveXlsxFile = saveXlsxFile;
+    function loadXmlFile(sheetNum, readFileData, loader) {
+        var path = XlsxFileType_1.XlsxFileType.getXmlFilePath(sheetNum, loader.fileInfo);
+        var data = readFileData(path);
+        var inst = data != null ? loader.read(data) : null;
+        return inst;
+    }
+    function saveXmlFile(sheetNum, writeFileData, data, writer) {
+        var path = XlsxFileType_1.XlsxFileType.getXmlFilePath(sheetNum, writer.fileInfo);
+        var dataStr = writer.write(data);
+        writeFileData(path, dataStr);
+    }
     // TODO finish implementing
     function defaultFileCreator(path) {
         var workbookId = "rId1";
@@ -245,17 +262,6 @@ var XlsxReaderWriter;
             workbookRels: workbookRels,
             worksheets: worksheets
         };
-    }
-    function loadXmlFile(sheetNum, readFileData, loader) {
-        var path = XlsxFileType_1.XlsxFileType.getXmlFilePath(sheetNum, loader.fileInfo);
-        var data = readFileData(path);
-        var inst = data != null ? loader.read(data) : null;
-        return inst;
-    }
-    function saveXmlFile(sheetNum, writeFileData, data, writer) {
-        var path = XlsxFileType_1.XlsxFileType.getXmlFilePath(sheetNum, writer.fileInfo);
-        var dataStr = writer.write(data);
-        writeFileData(path, dataStr);
     }
     function createDefaultStylesheet() {
         return {
