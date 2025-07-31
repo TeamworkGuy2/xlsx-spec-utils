@@ -39,20 +39,24 @@ var XmlFileReadWriter = /** @class */ (function () {
         var dom = this.saveToDom(data);
         return XmlFileReadWriter.domToXmlText(dom);
     };
-    /** Creates a new OpenXmlIo.ParsedFile instance to hold DOM data, calls the 'rootReadWriter' read() method and returns the result
+    /** Creates a new OpenXmlIo.ParsedFile instance to hold DOM data, calls the `rootReadWriter` read() method and returns the result
      * @param dom the Document to read
+     * @param namespaceURI optional namespace to assign to elements created using this instance's
+     * `lastReadXmlDoc.domBldr` property. This allows callers to control the default namespace of
+     * all elements created when `saveToDom()` is called and the `rootReadWriter.write()` uses
+     * `domBldr.create()` to create new elements.
+     * If provided, elements will be created using `dom.createElementNS()` instead of `dom.createElement()`.
      * @return the data object returned by rootReadWriter.read() given the 'dom' parameter
      */
-    XmlFileReadWriter.prototype.loadFromDom = function (dom) {
-        var ns = dom.lookupNamespaceURI('');
-        var xmlDoc = XmlFileInst_1.XmlFileInst.newInst(dom, ns);
+    XmlFileReadWriter.prototype.loadFromDom = function (dom, namespaceURI) {
+        var xmlDoc = XmlFileInst_1.XmlFileInst.newInst(dom, namespaceURI);
         this.lastReadXmlDoc = xmlDoc;
         var domRoot = xmlDoc.dom.childNodes[0];
         return this.rootReadWriter.read(xmlDoc, domRoot);
     };
     /** Write data into the last DOM result loaded by read()/loadFromDom().
-     * The 'prepForWrite' function is called first with the last DOM result.
-     * Then the 'rootReadWriter' write() method is called to write the 'data' parameter to an HTMLElement subtree.
+     * The `prepForWrite` function is called first with the last DOM result.
+     * Then the `rootReadWriter` write() method is called to write the 'data' parameter to an HTMLElement subtree.
      * Finally the child elements of the write() result are added to the last DOM result and the last DOM result is returned
      * @param data the data to convert to HTMLElement(s)
      * @return the last DOM result loaded by read()/loadFromDom() with additional elements created by rootReadWriter based on the 'data' parameter provided
@@ -68,13 +72,15 @@ var XmlFileReadWriter = /** @class */ (function () {
         xmlDoc.addChilds(elemDom, xmlDoc.getChildNodes(elem));
         return xmlDoc.dom;
     };
-    /** Convert a DOM node (can be an entire document or a subtree) to a string
+    /** Convert a DOM node (can be an entire document or a subtree) to a string.
+     * Uses {@link DomBuilderHelper}'s `getSerializer()` to serialize the DOM node.
      * @param dom the DOM node to serialize
      */
     XmlFileReadWriter.domToXmlText = function (dom) {
         return DomBuilderHelper_1.DomBuilderHelper.getSerializer().serializeToString(dom);
     };
-    /** Convert an XML string into a DOM document
+    /** Convert an XML string into a DOM document.
+     * Uses {@link DomBuilderHelper}'s `getParser()` to parse the xml string.
      * @param xmlStr the XML string to parse
      */
     XmlFileReadWriter.xmlTextToDom = function (xmlStr) {

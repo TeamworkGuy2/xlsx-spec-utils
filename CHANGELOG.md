@@ -4,6 +4,15 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
+### [1.3.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.3.0) - 2025-07-29
+#### Added
+* `files/XlsxNamespace.ts` contains some common OpenXML and XLSX namespace prefix to URI mappings
+* `XmlFileInst` constructor takes a third, optional argument `attributeNamespaceHandler` which can be null/undefined. This handler is responsible for namespace URI lookup and handling on the document when an attribute is set with a qualifying name starting with a `prefix:`. This allows callers to control namespace handling.
+* `XmlFileInst.lookupAndAddNamespace()` static helper for mapping attribute qualifying name prefixes to namespace URIs
+* `XmlFileReadWriter` `loadFromDom()` takes a second optional `namespaceURI` argument which is passed to the `domBldr` property (`DomBuilderFactory`) that `XmlFileInst` creates. This allows callers to control the default namespace of all elements created when `saveToDom()` is called and the `rootReadWriter.write()` uses `domBldr.create()` to create new elements
+
+
+--------
 ### [1.2.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.2.0) - 2025-07-26
 #### Changed
 * Refactored `XmlFileInst` from a module with a nested `XmlDocFile` class to a class with static methods
