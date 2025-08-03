@@ -42,7 +42,7 @@ export class XmlFileInst<D extends DocumentLike = DocumentLike>
         // custom handling for attribute namespaces in OpenXML files
         this.domBldr = new DomBuilderFactory(dom, namespaceURI, attributeNamespaceHandler);
         this.validator = XlsxDomErrorsImpl;
-        this.readMulti = <T>(reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName?: string): T[] => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
+        this.readMulti = <T>(reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: Element[], expectedElemName?: string): T[] => XmlFileInst.readMulti(this, reader, elems, expectedElemName);
         this.writeMulti = <T>(writer: OpenXmlIo.WriteFunc<T> | OpenXmlIo.WriteFuncNamed<T>, insts: T[] | { [id: string]: T }, keysOrExpectedElemName?: string | string[]): ElementLike[] => XmlFileInst.writeMulti(this, writer, insts, keysOrExpectedElemName);
     }
 
@@ -61,7 +61,7 @@ export class XmlFileInst<D extends DocumentLike = DocumentLike>
     /** Logic for reading/writing an array of OpenXml elements using a reader/writer for a single element of the same type
      */
 
-    public static readMulti<T>(xmlDoc: OpenXmlIo.ReaderContext, reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: HTMLElement[], expectedElemName?: string): T[] {
+    public static readMulti<T>(xmlDoc: OpenXmlIo.ReaderContext, reader: OpenXmlIo.ReadFunc<T> | OpenXmlIo.ReadFuncNamed<T>, elems: Element[], expectedElemName?: string): T[] {
         var res: T[] = [];
         for (var i = 0, size = elems.length; i < size; i++) {
             var elem = elems[i];

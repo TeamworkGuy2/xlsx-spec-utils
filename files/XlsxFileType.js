@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.XlsxFileType = void 0;
-/** Information about an XLSX file
+/** Metadata about an XLSX file
  * @author TeamworkGuy2
  * @since 2016-5-27
  * @see {@link OpenXmlIo.XlsxFileType}

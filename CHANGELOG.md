@@ -4,6 +4,15 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
+### [1.4.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.4.0) - 2025-08-03
+#### Changed
+* Update `xlsx-spec-models` dependency to `v1.2.0`
+* Relax `XmlFileInst.readMulti` to take `Element` instead of `HTMLElement`
+* `XmlFileReaderWriter` `write()` now adds an XML declaration to the returned XML string if one is missing from the `saveToDom()` serialized document
+* Added optional arguments `includeXmlDeclaration?: boolean` and `fileType?: OpenXmlIo.XlsxFileType` to `XmlFileReaderWriter` `domToXmlText()`
+
+
+--------
 ### [1.3.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.3.0) - 2025-07-29
 #### Added
 * `files/XlsxNamespace.ts` contains some common OpenXML and XLSX namespace prefix to URI mappings

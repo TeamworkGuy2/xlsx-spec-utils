@@ -127,37 +127,37 @@ export module XlsxReaderWriter {
 
     // ==== prep*ForWrite functions for various XLSX internal files ====
     function prepCalcChainForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.CalculationChain) {
-        var calcChainDom = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
+        var calcChainDom = (<Document>xmlDoc.dom).childNodes[0];
         xmlDoc.removeChilds(calcChainDom);
     }
 
 
     function prepCommentsForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.Comments) {
-        var commentsDom = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
+        var commentsDom = (<Document>xmlDoc.dom).childNodes[0];
         xmlDoc.removeChilds(commentsDom);
     }
 
 
     function prepContentTypesForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.ContentTypes) {
-        var contentTypesDom = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
+        var contentTypesDom = (<Document>xmlDoc.dom).childNodes[0];
         xmlDoc.removeChilds(contentTypesDom);
     }
 
 
     function prepDrawingsForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.WorksheetDrawing) {
-        var commentsDom = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
+        var commentsDom = (<Document>xmlDoc.dom).childNodes[0];
         xmlDoc.removeChilds(commentsDom);
     }
 
 
     function prepRelsForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.Relationships) {
-        var relsDom = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
+        var relsDom = (<Document>xmlDoc.dom).childNodes[0];
         xmlDoc.removeChilds(relsDom);
     }
 
 
     function prepSharedStringsForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.SharedStringTable) {
-        var sharedStrings = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
+        var sharedStrings = <Element>(<Document>xmlDoc.dom).childNodes[0];
         xmlDoc.removeAttr(sharedStrings, "count");
         xmlDoc.removeAttr(sharedStrings, "uniqueCount");
         xmlDoc.removeChilds(sharedStrings);
@@ -165,19 +165,19 @@ export module XlsxReaderWriter {
 
 
     function prepStylesForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.Stylesheet) {
-        var commentsDom = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
+        var commentsDom = (<Document>xmlDoc.dom).childNodes[0];
         xmlDoc.removeChilds(commentsDom);
     }
 
 
     function prepWorkbookForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.Workbook) {
-        var workbook = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
+        var workbook = (<Document>xmlDoc.dom).childNodes[0];
         xmlDoc.removeChilds(workbook);
     }
 
 
     function prepWorksheetForWrite(xmlDoc: OpenXmlIo.WriterContext, inst: OpenXml.Worksheet) {
-        var worksheet = <HTMLElement>(<Document>xmlDoc.dom).childNodes[0];
+        var worksheet = (<Document>xmlDoc.dom).childNodes[0];
         xmlDoc.removeChilds(worksheet);
 
         WorksheetUtil.updateBounds(inst);
