@@ -92,7 +92,7 @@ var XmlFileReadWriter = /** @class */ (function () {
         var _a;
         var xml = DomBuilderHelper_1.DomBuilderHelper.getSerializer().serializeToString(dom);
         if (includeXmlDeclaration !== false && !xml.startsWith("<?xml")) {
-            xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"".concat(fileType == null || !((_a = fileType === null || fileType === void 0 ? void 0 : fileType.xlsxFilePath) === null || _a === void 0 ? void 0 : _a.endsWith(".rels")) ? " standalone=\"yes\"" : '', "?>") + xml;
+            xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"".concat(fileType == null || !((_a = fileType === null || fileType === void 0 ? void 0 : fileType.xlsxFilePath) === null || _a === void 0 ? void 0 : _a.endsWith(".rels")) ? " standalone=\"yes\"" : '', "?>\n") + xml;
         }
         return xml;
     };

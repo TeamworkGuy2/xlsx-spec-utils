@@ -106,7 +106,7 @@ export class XmlFileReadWriter<T> implements OpenXmlIo.FileReadWriter<T> {
     public static domToXmlText(dom: Node, includeXmlDeclaration?: boolean, fileType?: OpenXmlIo.XlsxFileType): string {
         let xml = DomBuilderHelper.getSerializer().serializeToString(dom);
         if (includeXmlDeclaration !== false && !xml.startsWith("<?xml")) {
-            xml = `<?xml version="1.0" encoding="UTF-8"${fileType == null || !fileType?.xlsxFilePath?.endsWith(".rels") ? ` standalone="yes"` : ''}?>` + xml;
+            xml = `<?xml version="1.0" encoding="UTF-8"${fileType == null || !fileType?.xlsxFilePath?.endsWith(".rels") ? ` standalone="yes"` : ''}?>\n` + xml;
         }
         return xml;
     }

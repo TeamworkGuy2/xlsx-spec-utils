@@ -1,6 +1,6 @@
 {
   "name": "xlsx-spec-utils",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "TypeScript Open XML XLSX read/write utils",
   "author": "TeamworkGuy2",
   "homepage" : "https://github.com/TeamworkGuy2/xlsx-spec-utils",

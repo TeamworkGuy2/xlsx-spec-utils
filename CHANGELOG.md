@@ -4,6 +4,12 @@ This project does its best to adhere to [Semantic Versioning](http://semver.org/
 
 
 --------
+### [1.4.1](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.4.1) - 2025-08-03
+#### Fixed
+* XML declaration should end with a newline
+
+
+--------
 ### [1.4.0](https://github.com/TeamworkGuy2/xlsx-spec-utils/releases/tag/v1.4.0) - 2025-08-03
 #### Changed
 * Update `xlsx-spec-models` dependency to `v1.2.0`
